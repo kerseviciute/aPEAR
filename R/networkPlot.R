@@ -53,9 +53,9 @@ drawPlot <- function(enrichment, sim, clusters, innerCutoff = 0.1, outerCutoff =
   res <- foreach(id = names(pos), .combine = rbind) %do% {
     data.table(ID = id, x = pos[[id]][ 1 ], y = pos[[id]][ 2 ])
   } %>%
-      merge(enrichment[ , c('Description', 'NES', 'setSize') ], by.x = 'ID', by.y = 'Description') %>%
-      merge(data.table(Cluster = clusters, ID = names(clusters)), by.x = 'ID', by.y = 'ID') %>%
-      .[ , `Cluster size` := as.integer(clusterSizes[ Cluster ]) ]
+    merge(enrichment[ , c('Description', 'NES', 'setSize') ], by.x = 'ID', by.y = 'Description') %>%
+    merge(data.table(Cluster = clusters, ID = names(clusters)), by.x = 'ID', by.y = 'ID') %>%
+    .[ , `Cluster size` := as.integer(clusterSizes[ Cluster ]) ]
 
   range <- max(abs(res[ , NES ]))
   lines <- listEdges(graph, res)
@@ -65,23 +65,23 @@ drawPlot <- function(enrichment, sim, clusters, innerCutoff = 0.1, outerCutoff =
   plot <- addEllipses(plot, res, clusters)
 
   plot <- plot +
-      geom_link0(data = lines, aes(x = x, y = y, xend = xend, yend = yend), size = 0.1, alpha = 0.3) +
-      geom_point(data = res, aes(x = x, y = y, ID = ID, color = NES, size = setSize, Cluster = Cluster, `Cluster size` = `Cluster size`)) +
-      theme(axis.title.x = element_blank(),
-            axis.text.x = element_blank(),
-            axis.ticks.x = element_blank(),
-            axis.title.y = element_blank(),
-            axis.text.y = element_blank(),
-            axis.ticks.y = element_blank(),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            panel.background = element_blank(),
-            legend.position = 'none') +
-      scale_color_distiller(limits = c(-range, range), palette = 'Spectral') +
-      coord_fixed() +
-      clusterLabels(res) +
-      ylim(-1.1, 1.1) +
-      xlim(-1.1, 1.1)
+    geom_link0(data = lines, aes(x = x, y = y, xend = xend, yend = yend), size = 0.1, alpha = 0.3) +
+    geom_point(data = res, aes(x = x, y = y, ID = ID, color = NES, size = setSize, Cluster = Cluster, `Cluster size` = `Cluster size`)) +
+    theme(axis.title.x = element_blank(),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          axis.title.y = element_blank(),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(),
+          legend.position = 'none') +
+    scale_color_distiller(limits = c(-range, range), palette = 'Spectral') +
+    coord_fixed() +
+    clusterLabels(res) +
+    ylim(-1.1, 1.1) +
+    xlim(-1.1, 1.1)
 }
 
 #' @import reticulate
@@ -148,34 +148,36 @@ listEdges <- function(graph, positions) {
 }
 
 #' @import data.table
-addEllipses <- function (plot, pathways, clusters) {
+addEllipses <- function(plot, pathways, clusters) {
   for (cluster in unique(clusters)) {
-    points <- pathways[ Cluster == cluster, list(x, y)]
+    points <- pathways[ Cluster == cluster, list(x, y) ]
 
     if (nrow(points) == 1) { next }
     if (nrow(points) == 2) {
-      points <- rbind(points, data.table(x=mean(points[, x]) + 0.01, y=mean(points[, y]) - 0.01))
+      points <- rbind(points, data.table(x = mean(points[ , x ]) + 0.01, y = mean(points[ , y ]) - 0.01))
     }
 
-    params <- mvee(points, plotme=FALSE)
-    if(params$ab[1] > 0.5 | params$ab[2] > 0.5) next
+    params <- mvee(points, plotme = FALSE)
+    if (params$ab[ 1 ] > 0.5 | params$ab[ 2 ] > 0.5) next
 
     ellipsePoints <- ellipse(params$c, params$ab, params$alpha, bigger = 0.05)
 
-    plot <- plot + geom_path(data=ellipsePoints, aes(x, y), alpha=0.4, size=0.2)
+    plot <- plot + geom_path(data = ellipsePoints, aes(x, y), alpha = 0.4, size = 0.2)
   }
 
   plot
 }
 
-ellipse <- function (c, ab, alpha, bigger = 0) {
+ellipse <- function(c, ab, alpha, bigger = 0) {
   pacman::p_load(data.table)
   theta <- seq(0, 2 * pi, length = 101)
   a <- ab[ 1 ] + bigger
   b <- ab[ 2 ] + bigger
 
   x <- c[ 1 ] + a * cos(theta) * cos(alpha) - b * sin(theta) * sin(alpha)
-  y <- c[ 2 ] + a * cos(theta) * sin(alpha) + b * sin(theta) * cos(alpha)
+  y <- c[ 2 ] +
+    a * cos(theta) * sin(alpha) +
+    b * sin(theta) * cos(alpha)
 
   data.table(x = x, y = y)
 }
@@ -253,11 +255,11 @@ mvee <- function(xy = NULL, tolerance = 0.005, plotme = TRUE, max.iter = 500, sh
     a <- semi.axes[ 1 ]
     b <- semi.axes[ 2 ]
     elp.plot.xs <- c[ 1 ] + a * cos(theta) * cos(alpha) - b * sin(theta) *
-        sin(alpha)
+      sin(alpha)
     elp.plot.ys <- c[ 2 ] +
-        a * cos(theta) * sin(alpha) +
-        b * sin(theta) *
-            cos(alpha)
+      a * cos(theta) * sin(alpha) +
+      b * sin(theta) *
+        cos(alpha)
     ## Plot the ellipse with the same scale on each axis
     plot(elp.plot.xs, elp.plot.ys, type = "l", lty = "dotted", col = "blue",
          asp = 1,
@@ -283,16 +285,16 @@ clusterLabels <- function(pathways) {
   labels <- foreach(cluster = pathways[ , unique(Cluster) ], .combine = rbind) %do% {
     points <- pathways[ Cluster == cluster, list(x, y) ]
     midPoint <- list(
-        x = points[ , x ] %>% mean,
-        y = points[ , y ] %>% mean + 0.1
+      x = points[ , x ] %>% mean,
+      y = points[ , y ] %>% mean + 0.1
     )
 
     data.table(x = midPoint$x, y = midPoint$y, label = splitWords(cluster))
   }
 
-  geom_text(data=labels, aes(x=x, y=y, label=label), size=2)
+  geom_text(data = labels, aes(x = x, y = y, label = label), size = 2)
 }
 
 splitWords <- function(x) {
-  strwrap(x, width=30) %>% paste(collapse='\n')
+  strwrap(x, width = 30) %>% paste(collapse = '\n')
 }
