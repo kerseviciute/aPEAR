@@ -1,3 +1,4 @@
+#' Creates an empty matrix (with NA vals) from gene lists.
 emptyMatrix <- function(genes) {
   sim <- matrix(data = NA, nrow = length(genes), ncol = length(genes))
   colnames(sim) <- names(genes)
@@ -6,6 +7,9 @@ emptyMatrix <- function(genes) {
   sim
 }
 
+#' Creates an occurence matrix from gene lists.
+#'
+#' @importFrom dplyr %>%
 occurenceMatrix <- function(genes) {
   uniqueGenes <- genes %>% unlist %>% unique
 
