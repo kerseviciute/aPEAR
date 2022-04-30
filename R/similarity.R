@@ -1,7 +1,7 @@
 #' Calculates jaccard similarity between all pathways.
+#'
+#' @importFrom bayesbio jaccardSets
 similarityJaccard <- function(genes) {
-  library(bayesbio)
-
   sim <- emptyMatrix(genes)
 
   for (i in seq_along(genes)) {
@@ -16,9 +16,9 @@ similarityJaccard <- function(genes) {
 }
 
 #' Calculates cosine similarity between all pathways.
+#'
+#' @importFrom lsa cosine
 similarityCosine <- function(genes) {
-  library(lsa)
-
   sim <- emptyMatrix(genes)
   m <- occurenceMatrix(genes)
 
@@ -37,9 +37,9 @@ similarityCosine <- function(genes) {
 }
 
 #' Calculates mutual information between all pathways.
+#'
+#' @importFrom infotheo mutinformation
 similarityMutualInformation <- function(genes) {
-  library(infotheo)
-
   sim <- emptyMatrix(genes)
   m <- occurenceMatrix(genes)
 
@@ -56,24 +56,27 @@ similarityMutualInformation <- function(genes) {
 
 #' Calculates a similarity matrix.
 #'
-#' @param enrichment a data table containing enrichment results.
+#' @description Calculates a similarity matrix of all pathways in the enrichment.
+#'
+#' @param enrichment a data frame containing enrichment results.
 #' @param method a method to be used. Available values: 'jaccard', 'cosine', 'mutualInfo'.
-#' @param useOnlyCore logical value to specify whether to use all genes in the pathway or only
-#' the core enrichment.
+#'
+#' @importFrom tibble deframe
+#' @importFrom dplyr %>%
 #'
 #' @export
-pathwaySimilarity <- function(enrichment, method = 'jaccard', useOnlyCore = TRUE) {
+pathwaySimilarity <- function(enrichment, method = 'jaccard') {
   availableSimilarityMethods <- c('jaccard', 'cosine', 'mutualInfo')
   if (!(method %in% availableSimilarityMethods)) {
     stop(paste0('Unavailable method "', method, '"'))
   }
 
-  cols <- c('Description', ifelse(useOnlyCore, 'core_enrichment', 'enrichment'))
-  genes <- enrichment[ , ..cols ] %>%
-      deframe %>%
-      lapply(
-          function(x) { strsplit(x, split = '/')[[1]] }
-      )
+  # TODO: how to add the option to use all genes in the pathway?
+  # cols <- c('Description', ifelse(useOnlyCore, 'core_enrichment', 'enrichment'))
+  cols <- c('Description', 'core_enrichment')
+  genes <- enrichment[ , cols ] %>%
+    deframe %>%
+    lapply(\(x) strsplit(x, split = '/')[[1]])
 
   if (method == 'jaccard') return(similarityJaccard(genes))
   if (method == 'cosine') return(similarityCosine(genes))

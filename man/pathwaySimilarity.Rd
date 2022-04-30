@@ -4,16 +4,13 @@
 \alias{pathwaySimilarity}
 \title{Calculates a similarity matrix.}
 \usage{
-pathwaySimilarity(enrichment, method = "jaccard", useOnlyCore = TRUE)
+pathwaySimilarity(enrichment, method = "jaccard")
 }
 \arguments{
-\item{enrichment}{a data table containing enrichment results.}
+\item{enrichment}{a data frame containing enrichment results.}
 
 \item{method}{a method to be used. Available values: 'jaccard', 'cosine', 'mutualInfo'.}
-
-\item{useOnlyCore}{logical value to specify whether to use all genes in the pathway or only
-the core enrichment.}
 }
 \description{
-Calculates a similarity matrix.
+Calculates a similarity matrix of all pathways in the enrichment.
 }
