@@ -18,7 +18,7 @@ findClusters <- function(sim, minClusterSize = 2, method = 'markov', nameMethod 
   }
 
   nameMethods <- c('none', 'pagerank', 'wordcloud', 'hits')
-  if (!(nameMethods %in% nameMethods)) {
+  if (!(nameMethod %in% nameMethods)) {
     stop(paste0('Unrecognized nameMethod "', method, '"'))
   }
 
@@ -26,9 +26,9 @@ findClusters <- function(sim, minClusterSize = 2, method = 'markov', nameMethod 
     stop(paste0('minClusterSize = ', minClusterSize, '. Please choose minClusterSize >= 1.'))
   }
 
-  if (method == 'markov') findClustersMarkov(sim, minClusterSize, nameMethod) %>% return
-  if (method == 'hier') findClustersHier(sim, minClusterSize, nameMethod) %>% return
-  if (method == 'spectral') findClustersSpectral(sim, nameMethod) %>% return
+  if (method == 'markov') return(findClustersMarkov(sim, minClusterSize, nameMethod))
+  if (method == 'hier') return(findClustersHier(sim, minClusterSize, nameMethod))
+  if (method == 'spectral') return(findClustersSpectral(sim, nameMethod))
 }
 
 #' Finds clusters in a similarity matrix.
