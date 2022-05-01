@@ -2,7 +2,7 @@
 % Please edit documentation in R/networkPlot.R
 \name{enrichmentNetwork}
 \alias{enrichmentNetwork}
-\title{Enrichment network}
+\title{Enrichment Network}
 \usage{
 enrichmentNetwork(
   enrichment,

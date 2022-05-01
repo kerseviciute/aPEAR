@@ -4,10 +4,11 @@
 #' @description Currently, this package is able to work with DOSE enrichment classes. However, you
 #' may wish to pass different enrichment results. In this case, prepare your data so that it
 #' contains \code{'Description'} (readable pathway names) and \code{'pathwayGenes'} (a list of genes
-#' that belong to the pathway) columns. Use \code{'colorBy'} and \code{'nodeSize'} parameters to set
-#' which columns should be used for colouring the nodes and adjusting their size (eg.
-#' \code{colorBy = 'NES', nodeSize = 'setSize'}). These will not be set automatically if you create
-#' custom input. You may use \code{validateEnrichment} to check whether your data has valid format.
+#' that belong to the pathway, separated by '/') columns. Use \code{'colorBy'} and \code{'nodeSize'}
+#' parameters to set which columns should be used for colouring the nodes and adjusting their size
+#' (eg. \code{colorBy = 'NES', nodeSize = 'setSize'}). These will not be set automatically if you
+#' create custom input. You may use \code{validateEnrichment} to check whether your data has valid
+#' format.
 #' 
 #' @seealso \code{enrichmentNetwork}, \code{validateEnrichment}
 #' @name enrichmentData
@@ -48,7 +49,7 @@ occurenceMatrix <- function(values) {
   colnames(m) <- uniqueGenes
 
   for (path in rownames(m)) {
-    m[ path, colnames(m) %in% genes[[path]] ] <- TRUE
+    m[ path, colnames(m) %in% values[[path]] ] <- TRUE
   }
 
   m

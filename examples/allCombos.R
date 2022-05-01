@@ -1,5 +1,6 @@
 # TESTS ALL POSSIBLE COMBINATIONS
 
+# detach("package:pathExplore", unload=TRUE)
 library(pathExplore)
 library(clusterProfiler)
 library(org.Hs.eg.db)
@@ -13,13 +14,16 @@ simMethods <- c('jaccard', 'cosine', 'cor')
 clustMethods <- c('markov', 'hier', 'spectral')
 namingMethods <- c('pagerank', 'hits')
 
+enrichment <- enrich@result
+
 for (simMethod in simMethods) {
   for (clustMethod in clustMethods) {
-    for (nameMethod in namingMethods) {
+    for (clustNameMethod in namingMethods) {
       p <- enrichmentNetwork(enrich@result,
                        simMethod = simMethod,
                        clustMethod = clustMethod,
-                       clustNameMethod = nameMethod
+                       clustNameMethod = clustNameMethod,
+                       verbose = FALSE
       )
       print(p)
     }

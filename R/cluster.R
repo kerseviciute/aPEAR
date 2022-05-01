@@ -11,7 +11,7 @@
 #' @param nameMethod a method for setting cluster names. Available methods are: \code{'pagerank'},
 #' \code{'hits'}, and \code{'none'}
 #' @param verbose enable / disable log messages
-#'
+#' 
 #' @importFrom dplyr %>%
 #' 
 #' @export
@@ -46,7 +46,7 @@ findClusters <- function(sim,
 #' @param sim similarity matrix
 #' @param minClusterSize minimum cluster size
 #' @param verbose enable / disable log messages
-#'
+#' 
 #' @importFrom MCL mcl
 #' @importFrom dplyr %>%
 #' 

@@ -1,19 +1,19 @@
-#'
+#' 
 #' PageRank
-#'
+#' 
 #' @description Selects a name for each pathway cluster using PageRank method.
-#'
+#' 
 #' @param sim a similarity matrix used to detect the clusters
 #' @param clusters a vector of clusters, with names indicating the pathway name
-#'
+#' 
 #' @import igraph
 #' @import data.table
 #' @import foreach
 #' @importFrom dplyr %>%
-#'
+#' 
 clusterNamesPagerank <- function(sim, clusters) {
   stopifnot(rownames(sim) == colnames(sim))
-  stopifnot(nrow(m) == ncol(m))
+  stopifnot(nrow(sim) == ncol(sim))
 
   paths <- rownames(sim)
   edges <- list()
@@ -40,19 +40,19 @@ clusterNamesPagerank <- function(sim, clusters) {
   mapClusterNames(scores, clusters)
 }
 
-#'
+#' 
 #' HITS
-#'
+#' 
 #' @description Selects a name for each pathway cluster using HITS method.
-#'
+#' 
 #' @param sim a similarity matrix used to detect the clusters
 #' @param clusters a vector of clusters, with names indicating the pathway name
-#'
+#' 
 #' @importFrom arules hits
 #' @import foreach
 #' @import data.table
 #' @importFrom dplyr %>%
-#'
+#' 
 clusterNamesHits <- function(sim, clusters) {
   adjacency <- adjacencyFromSimilarity(sim, clusters)
 
@@ -61,19 +61,19 @@ clusterNamesHits <- function(sim, clusters) {
   mapClusterNames(scores, clusters)
 }
 
-#'
+#' 
 #' Cluster Name
-#'
+#' 
 #' @description Selects the cluster for each pathway from a precalculated cluster title scores.
-#'
+#' 
 #' @param scores pathway evaluation score as cluster center. It is a list with values as scores
 #' and names as pathway descriptions
 #' @param clusters a list of clusters, where values are cluster ID and names are pathway names
-#'
+#' 
 #' @import foreach
 #' @import data.table
 #' @importFrom tibble deframe
-#'
+#' 
 mapClusterNames <- function(scores, clusters) {
   clusterNames <- foreach(cluster = unique(clusters), .combine = rbind) %do% {
     name <- scores[ names(scores) %in% names(clusters[ clusters == cluster ]) ] %>%
@@ -89,21 +89,22 @@ mapClusterNames <- function(scores, clusters) {
     deframe
 }
 
-#'
+#' 
 #' Adjacency Matrix
-#'
+#' 
 #' @description Creates an adjacency matrix from similarity matrix, connecting nodes that belong to
 #' the same cluster.
-#'
-#' @param m similarity matrix
+#' 
+#' @param sim similarity matrix
 #' @param clusters list of clusters
-#'
-adjacencyFromSimilarity <- function(m, clusters) {
+#' 
+adjacencyFromSimilarity <- function(sim, clusters) {
   stopifnot(rownames(sim) == colnames(sim))
-  stopifnot(nrow(m) == ncol(m))
+  stopifnot(nrow(sim) == ncol(sim))
 
-  d <- nrow(m)
-  paths <- rownames(m)
+  d <- nrow(sim)
+  paths <- rownames(sim)
+  names(paths) <- paths
 
   adjacency <- emptyMatrix(paths, data = 0)
 
@@ -121,16 +122,16 @@ adjacencyFromSimilarity <- function(m, clusters) {
   adjacency
 }
 
-#'
+#' 
 #' Cluster Name
-#'
+#' 
 #' @description Selects best fitting name for a cluster of pathways.
-#'
+#' 
 #' @param sim similarity matrix used to detect the clusters
 #' @param clusters a list of clusters, where values are cluster ID and names are pathway names
 #' @param method a method for setting cluster names. Available method include \code{'pagerank'},
 #' \code{'hits'} and \code{'none'}
-#'
+#' 
 findClusterNames <- function(sim,
                              clusters,
                              method = c('pagerank', 'hits', 'none')) {

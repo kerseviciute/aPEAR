@@ -1,12 +1,12 @@
-#'
+#' 
 #' Minimum Volume Enclosing Ellipsoid
-#'
+#' 
 #' @description Uses the Khachiyan Algorithm to find the the minimum volume enclosing
 #' ellipsoid (MVEE) of a set of points. In two dimensions, this is just
 #' the bounding ellipse (this function is limited to two dimensions).
 #' Adapted by Andy Lyons from Matlab code by Nima Moshtagh.
 #' Copyright (c) 2009, Nima Moshtagh
-#'
+#' 
 #' @param xy a two-column data frame containing x and y coordinates if NULL then a random sample
 #' set of 10 points will be generated
 #' @param tolerance a tolerance value (default = 0.005)
@@ -16,13 +16,13 @@
 #' @param shiftxy TRUE/FALSE. If True, will apply a shift to the coordinates to make them
 #' smaller and speed up the matrix calculations, then reverse the shift to the center point of the
 #' resulting ellipoid. Default TRUE
-#'
+#' 
 #' @result Output A list containing the "center form" matrix equation of the ellipse. i.e. a 2x2
 #' matrix "A" and a 2x1 vector "C" representing the center of the ellipse such that:
 #' (x - C)' A (x - C) <= 1. Also in the list is a 2x1 vector elps.axes.lngth whose elements
 #' are  one-half  the lengths of the major and minor axes (variables a and b). Also in list is
 #' alpha, the angle of rotation.
-#'
+#' 
 # @references https://stat.ethz.ch/pipermail/r-help/2011-March/272997.html
 #             http://www.mathworks.com/matlabcentral/fileexchange/9542
 #             http://www.mathworks.com/matlabcentral/fileexchange/13844
