@@ -6,22 +6,22 @@
 \usage{
 enrichmentNetwork(
   enrichment,
-  simMethod = c("jaccard", "cosine", "mutualInfo"),
+  simMethod = c("jaccard", "cosine", "cor"),
   clustMethod = c("markov", "hier", "spectral"),
-  clustNameMethod = c("pagerank", "hits", "wordcloud", "none")
+  clustNameMethod = c("pagerank", "hits", "none")
 )
 }
 \arguments{
 \item{enrichment}{a data frame containing enrichment results.}
 
 \item{simMethod}{method for calculating similarity matrix between the pathways. Available
-methods: \code{jaccard}, \code{cosine} and \code{mutualInfo}}
+methods: \code{'jaccard'}, \code{'cosine'} and \code{'cor'}}
 
-\item{clustMethod}{method for detecting pathway clusters. Available methods: \code{markov},
-\code{hier} and \code{spectral}}
+\item{clustMethod}{method for detecting pathway clusters. Available methods: \code{'markov'},
+\code{'hier'} and \code{'spectral'}}
 
-\item{clustNameMethod}{method for selecting cluster names. Available methods: \code{pagerank},
-\code{hits}, \code{wordcloud} and \code{none}}
+\item{clustNameMethod}{method for selecting cluster names. Available methods: \code{'pagerank'},
+\code{'hits'} and \code{'none'}}
 }
 \description{
 Displays enrichment results as an easy to interpret cluster network.

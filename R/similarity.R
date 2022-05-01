@@ -36,21 +36,11 @@ similarityCosine <- function(genes) {
   sim
 }
 
-#' Calculates mutual information between all pathways.
-#'
-#' @importFrom infotheo mutinformation
-similarityMutualInformation <- function(genes) {
-  sim <- emptyMatrix(genes)
+#' Calculates correlation between genes in pathways.
+similarityCorrelation <- function(genes) {
   m <- occurenceMatrix(genes)
-
-  for (i in seq_along(genes)) {
-    for (j in seq_along(genes)) {
-      if (j > i) { break }
-      sim[ i, j ] <- mutinformation(m[ i, ], m[ j, ], method = 'emp')
-      sim[ j, i ] <- sim[ i, j ]
-    }
-  }
-
+  sim <- cor(t(m))
+  sim[ sim < 0 ] <- 0
   sim
 }
 
@@ -59,14 +49,14 @@ similarityMutualInformation <- function(genes) {
 #' @description Calculates a similarity matrix of all pathways in the enrichment.
 #'
 #' @param enrichment a data frame containing enrichment results.
-#' @param method a method to be used. Available values: 'jaccard', 'cosine', 'mutualInfo'.
+#' @param method a method to be used. Available values: 'jaccard', 'cosine', 'cor'.
 #'
 #' @importFrom tibble deframe
 #' @importFrom dplyr %>%
 #'
 #' @export
 pathwaySimilarity <- function(enrichment, method = 'jaccard') {
-  availableSimilarityMethods <- c('jaccard', 'cosine', 'mutualInfo')
+  availableSimilarityMethods <- c('jaccard', 'cosine', 'cor')
   if (!(method %in% availableSimilarityMethods)) {
     stop(paste0('Unavailable method "', method, '"'))
   }
@@ -78,7 +68,9 @@ pathwaySimilarity <- function(enrichment, method = 'jaccard') {
     deframe %>%
     lapply(\(x) strsplit(x, split = '/')[[1]])
 
-  if (method == 'jaccard') return(similarityJaccard(genes))
-  if (method == 'cosine') return(similarityCosine(genes))
-  if (method == 'mutualInfo') return(similarityMutualInformation(genes))
+  switch(method,
+         'jaccard' = similarityJaccard(genes),
+         'cosine' = similarityCosine(genes),
+         'cor' = similarityCorrelation(genes)
+  )
 }

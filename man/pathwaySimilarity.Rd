@@ -9,7 +9,7 @@ pathwaySimilarity(enrichment, method = "jaccard")
 \arguments{
 \item{enrichment}{a data frame containing enrichment results.}
 
-\item{method}{a method to be used. Available values: 'jaccard', 'cosine', 'mutualInfo'.}
+\item{method}{a method to be used. Available values: 'jaccard', 'cosine', 'cor'.}
 }
 \description{
 Calculates a similarity matrix of all pathways in the enrichment.
