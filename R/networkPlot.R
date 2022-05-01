@@ -207,7 +207,7 @@ enrichmentNetwork.addEllipses <- function(plot, pathways) {
 
     params <- mvee(points, plotme = FALSE)
 
-    ellipsePoints <- enrichmentNetwork.ellipse(params$c, params$a, params$b, params$alpha, bigger = 0.25)
+    ellipsePoints <- enrichmentNetwork.ellipse(params$c, params$a, params$b, params$alpha, bigger = 0.35)
 
     plot <- plot + geom_path(data = ellipsePoints, aes(x, y), alpha = 0.4, size = 0.2)
   }
