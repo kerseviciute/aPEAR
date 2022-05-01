@@ -1,45 +1,59 @@
-#' Finds clusters in a similarity matrix.
-#'
+#' 
+#' Pathway Clustering
+#' 
+#' @description Finds clusters in a similarity matrix.
+#' 
 #' @param sim similarity matrix
 #' @param minClusterSize minimum cluster size (integer, >= 1). This parameter is ignored when using
 #' \code{method = 'spectral'}
-#' @param method a method to be used for detecting clusters. Available options include 'markov',
-#' 'hier' and 'spectral'
-#' @param nameMethod a method for setting cluster names. Available method include 'pagerank',
-#' 'hits', 'wordcloud' and 'none'
+#' @param method a method to be used for detecting clusters. Available methods are: \code{'markov'},
+#' \code{'hier'} and \code{'spectral'}
+#' @param nameMethod a method for setting cluster names. Available methods are: \code{'pagerank'},
+#' \code{'hits'}, and \code{'none'}
+#' @param verbose enable / disable log messages
 #'
 #' @importFrom dplyr %>%
-#'
+#' 
 #' @export
-findClusters <- function(sim, minClusterSize = 2, method = 'markov', nameMethod = 'pagerank') {
-  methods <- list('markov', 'hier', 'spectral')
-  if (!(method %in% methods)) {
-    stop(paste0('Unrecognized method "', method, '"'))
-  }
-
-  nameMethods <- c('none', 'pagerank', 'wordcloud', 'hits')
-  if (!(nameMethod %in% nameMethods)) {
-    stop(paste0('Unrecognized nameMethod "', method, '"'))
-  }
+#' 
+findClusters <- function(sim,
+                         minClusterSize = 2,
+                         method = c('markov', 'hier', 'spectral'),
+                         nameMethod = c('pagerank', 'hits', 'none'),
+                         verbose = FALSE
+) {
+  method <- match.arg(method)
+  nameMethod <- match.arg(nameMethod)
 
   if (minClusterSize < 1) {
-    stop(paste0('minClusterSize = ', minClusterSize, '. Please choose minClusterSize >= 1.'))
+    warning(paste0('Invalid minClusterSize = ', minClusterSize, '. Will set minClusterSize = 2.'))
+    minClusterSize <- 2
   }
 
-  if (method == 'markov') return(findClustersMarkov(sim, minClusterSize, nameMethod))
-  if (method == 'hier') return(findClustersHier(sim, minClusterSize, nameMethod))
-  if (method == 'spectral') return(findClustersSpectral(sim, nameMethod))
+  clusters <- switch(method,
+                     'markov' = findClustersMarkov(sim, minClusterSize, nameMethod, verbose),
+                     'hier' = findClustersHier(sim, minClusterSize, nameMethod, verbose),
+                     'spectral' = findClustersSpectral(sim, nameMethod, verbose))
+
+  findClusterNames(sim, clusters, nameMethod)
 }
 
-#' Finds clusters in a similarity matrix.
-#'
+#' 
+#' Markov Cluster Algorithm
+#' 
+#' @description Finds clusters in a similarity matrix using Markov Cluster Algorithm.
+#' 
 #' @param sim similarity matrix
 #' @param minClusterSize minimum cluster size
-#' @param method a method for setting the cluster names
+#' @param verbose enable / disable log messages
 #'
 #' @importFrom MCL mcl
 #' @importFrom dplyr %>%
-findClustersMarkov <- function(sim, minClusterSize = 2, method = 'pagerank') {
+#' 
+findClustersMarkov <- function(sim,
+                               minClusterSize = 2,
+                               verbose = TRUE
+) {
   allow1 <- ifelse(minClusterSize == 1, TRUE, FALSE)
 
   res <- mcl(sim,
@@ -62,15 +76,22 @@ findClustersMarkov <- function(sim, minClusterSize = 2, method = 'pagerank') {
     clusters <- clusters[ clusters %in% ids ]
   }
 
-  findClusterNames(sim, clusters, method)
+  clusters
 }
 
-#' Finds clusters using hierarchical algorithm.
-#'
+#' 
+#' Hierarchical Clustering
+#' 
+#' @description Finds clusters using hierarchical algorithm.
+#' 
 #' @param sim similarity matrix
 #' @param minClusterSize minimum cluster size
-#' @param method a method for setting the cluster names
-findClustersHier <- function(sim, minClusterSize = 2, method = 'pagerank') {
+#' @param verbose enable / disable log messages
+#' 
+findClustersHier <- function(sim,
+                             minClusterSize = 2,
+                             verbose = TRUE
+) {
   hCluster <- as.dist(1 - sim) %>% hclust
   clusters <- cutree(hCluster, h = 0.9)
 
@@ -80,19 +101,23 @@ findClustersHier <- function(sim, minClusterSize = 2, method = 'pagerank') {
     clusters <- clusters[ clusters %in% ids ]
   }
 
-  findClusterNames(sim, clusters, method)
+  clusters
 }
 
+#' 
+#' Spectral Clustering
+#' 
 #' Finds clusters using adaptive spectral clustering.
-#'
+#' 
 #' @param sim similarity matrix
-#' @param method a method for setting the cluster names
-#'
+#' @param verbose enable / disable log messages
+#' 
 #' @importFrom Spectrum Spectrum
-findClustersSpectral <- function(sim, method = 'wordcloud') {
-  clusters <- Spectrum(sim, maxk = 50, showres = FALSE)
+#' 
+findClustersSpectral <- function(sim, verbose = TRUE) {
+  clusters <- Spectrum(sim, maxk = 50, showres = FALSE, silent = verbose)
   clusters <- clusters$assignments
   names(clusters) <- colnames(sim)
 
-  findClusterNames(sim, clusters, method)
+  clusters
 }
