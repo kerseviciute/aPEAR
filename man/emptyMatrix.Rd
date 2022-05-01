@@ -4,7 +4,7 @@
 \alias{emptyMatrix}
 \title{Creates an empty matrix (with NA vals) from gene lists.}
 \usage{
-emptyMatrix(genes)
+emptyMatrix(genes, data = NA)
 }
 \description{
 Creates an empty matrix (with NA vals) from gene lists.

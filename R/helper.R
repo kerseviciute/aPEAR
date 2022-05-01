@@ -11,8 +11,8 @@
 NULL
 
 #' Creates an empty matrix (with NA vals) from gene lists.
-emptyMatrix <- function(genes) {
-  sim <- matrix(data = NA, nrow = length(genes), ncol = length(genes))
+emptyMatrix <- function(genes, data = NA) {
+  sim <- matrix(data = data, nrow = length(genes), ncol = length(genes))
   colnames(sim) <- names(genes)
   rownames(sim) <- names(genes)
 
