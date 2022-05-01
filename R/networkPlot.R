@@ -16,7 +16,7 @@
 #' default (either setSize or Count will be used)
 #' @param verbose enable / disable log messages
 #'
-#' @seealso \code{enrichmentData}
+#' @seealso \code{enrichmentData}, \code{validateEnrichment}
 #'
 #' @export
 #'
@@ -50,46 +50,50 @@ enrichmentNetwork <- function(
                            method = clustMethod,
                            nameMethod = clustNameMethod,
                            verbose = verbose)
-  #
-  # p <- drawPlot(enrichment, sim, clusters, colorBy, nodeSize)
-  #
-  # p
+
+  enrichClust <- prepareEnrichmentClusters(enrichment, clusters, params)
+
+  enrichmentNetwork.plot(enrichClust, sim, clusters)
 }
 
 #'
+#' Enrichment Clusters
+#'
+#' @description Prepares enrichment and clustering results for \code{drawPlot} method.
+#'
 #' @import data.table
 #' @importFrom dplyr %>%
-#' @import ggplot2
-#' @import ggforce
-#' @import reticulate
-#' @import foreach
-drawPlot <- function(enrichment, sim, clusters, colorBy, innerCutoff = 0.1, outerCutoff = 0.5) {
-  # TODO: THIS IS TERRIBLE! FIND A WAY TO MAKE IT WORK WITHOUT USING PYTHON!
-  use_condaenv('snakemake')
-  nx <- import("networkx")
-
-  graph <- connect(sim, clusters, innerCutoff = innerCutoff, outerCutoff = outerCutoff)
-  pos <- nx$spring_layout(graph, seed = as.integer(1234))
-
+#'
+prepareEnrichmentClusters <- function(enrichment, clusters, params) {
   clusterSizes <- table(clusters)
 
-  res <- foreach(id = names(pos), .combine = rbind) %do% {
-    data.table(ID = id, x = pos[[id]][ 1 ], y = pos[[id]][ 2 ])
-  } %>%
-    merge(enrichment[ , c('Description', colorBy, 'setSize') ], by.x = 'ID', by.y = 'Description') %>%
-    merge(data.table(Cluster = clusters, ID = names(clusters)), by.x = 'ID', by.y = 'ID') %>%
+  data.table(
+    ID = enrichment[ , 'Description' ],
+    size = enrichment[ , params$nodeSize ],
+    color = enrichment[ , params$colorBy ]
+  ) %>% merge(data.table(Cluster = clusters, ID = names(clusters)), by.x = 'ID', by.y = 'ID') %>%
     .[ , `Cluster size` := as.integer(clusterSizes[ Cluster ]) ]
+}
 
-  range <- max(abs(res[ , NES ]))
-  lines <- listEdges(graph, res)
+#' @import igraph
+#' @import data.table
+#' @import ggplot2
+#' @import ggforce
+enrichmentNetwork.plot <- function(dt, sim, clust) {
+  graph <- enrichmentNetwork.connect(sim, clust)
+  coordinates <- merge(graph$coordinates, dt, by.x='ID', by.y='ID')
+
+  range <- max(abs(coordinates[ , color ]))
+  lines <- graph$edges
 
   plot <- ggplot()
 
-  plot <- addEllipses(plot, res, clusters)
+  # TODO: add ellipses!
+  # plot <- addEllipses(plot, res, clusters)
 
   plot <- plot +
-    geom_link0(data = lines, aes(x = x, y = y, xend = xend, yend = yend), size = 0.1, alpha = 0.3) +
-    geom_point(data = res, aes(x = x, y = y, ID = ID, color = NES, size = setSize, Cluster = Cluster, `Cluster size` = `Cluster size`)) +
+    geom_link0(data = lines, aes(x = xStart, y = yStart, xend = xEnd, yend = yEnd), size = 0.1, alpha = 0.3) +
+    geom_point(data = coordinates, aes(x = x, y = y, ID = ID, color = color, size = size, Cluster = Cluster, `Cluster size` = `Cluster size`)) +
     theme(axis.title.x = element_blank(),
           axis.text.x = element_blank(),
           axis.ticks.x = element_blank(),
@@ -102,19 +106,16 @@ drawPlot <- function(enrichment, sim, clusters, colorBy, innerCutoff = 0.1, oute
           legend.position = 'none') +
     scale_color_distiller(limits = c(-range, range), palette = 'Spectral') +
     coord_fixed() +
-    clusterLabels(res) +
-    ylim(-1.1, 1.1) +
-    xlim(-1.1, 1.1)
+    clusterLabels(coordinates)
 }
 
-#' @import reticulate
-connect <- function(sim, clusters, innerCutoff = 0.1, outerCutoff = 0.5) {
-  use_condaenv('snakemake')
-  nx <- import("networkx")
-
+#' @import igraph
+enrichmentNetwork.connect <- function(sim, clusters, innerCutoff = 0.1, outerCutoff = 0.5) {
   stopifnot(rownames(sim) == colnames(sim))
   paths <- rownames(sim)
-  g <- nx$Graph()
+
+  counter <- 1
+  edges <- list()
 
   for (i in 1:(nrow(sim) - 1)) {
     for (j in (i + 1):ncol(sim)) {
@@ -123,51 +124,35 @@ connect <- function(sim, clusters, innerCutoff = 0.1, outerCutoff = 0.5) {
       clusteri <- clusters[ paths[ i ] ]
       clusterj <- clusters[ paths[ j ] ]
       if (!anyNA(c(clusteri, clusterj)) && clusteri == clusterj) {
-        if (value >= innerCutoff) g$add_edge(paths[ i ], paths[ j ], weight = value)
-        next
+        if (value >= innerCutoff) {
+          edges[[counter]] <- data.table(from = paths[ i ], to = paths[ j ], weight = value)
+          counter <- counter + 1
+        }
       }
 
       if (value >= outerCutoff) {
-        g$add_edge(paths[ i ], paths[ j ], weight = value)
+        edges[[counter]] <- data.table(from = paths[ i ], to = paths[ j ], weight = value)
+        counter <- counter + 1
       }
     }
   }
 
-  return(g)
-}
+  edges <- rbindlist(edges)
 
-#' @import reticulate
-#' @import data.table
-listEdges <- function(graph, positions) {
-  iter <- as_iterator(graph$edges)
-  current <- iter_next(iter)
+  g <- graph_from_data_frame(edges, directed = FALSE)
 
-  edges <- list()
-  counter <- 0
-  while (!is.null(current)) {
-    x <- current
+  coordinates <- layout_nicely(g) %>% as.data.table
+  colnames(coordinates) <- c('x', 'y')
+  coordinates[ , ID := V(g) %>% as.list %>% names ]
 
-    path1 <- x[[1]]
-    if (!(path1 %in% positions[ , ID ])) {
-      current <- iter_next(iter)
-      next
-    }
-    path1 <- positions[ ID == path1 ]
+  edges %>%
+    .[ , xStart := lapply(from, \(path) coordinates[ ID %in% path, x ]) %>% unlist ] %>%
+    .[ , yStart := lapply(from, \(path) coordinates[ ID %in% path, y ]) %>% unlist ] %>%
+    .[ , xEnd := lapply(to, \(path) coordinates[ ID %in% path, x ]) %>% unlist ] %>%
+    .[ , yEnd := lapply(to, \(path) coordinates[ ID %in% path, y ]) %>% unlist ]
 
-    path2 <- x[[2]]
-    if (!(path2 %in% positions[ , ID ])) {
-      current <- iter_next(iter)
-      next
-    }
-    path2 <- positions[ ID == path2 ]
-
-    counter <- counter + 1
-    edges[[counter]] <- data.table(x = path1[ , x ], y = path1[ , y ], xend = path2[ , x ], yend = path2[ , y ])
-
-    current <- iter_next(iter)
-  }
-
-  return(rbindlist(edges))
+  list(coordinates = coordinates,
+       edges = edges)
 }
 
 #' @import data.table
@@ -206,17 +191,15 @@ ellipse <- function(c, ab, alpha, bigger = 0) {
 }
 
 #' @import data.table
+#' @import foreach
+#' @importFrom dplyr %>%
+#' @import ggplot2
 clusterLabels <- function(pathways) {
-  library(foreach)
-  library(data.table)
-  library(dplyr)
-  library(ggplot2)
-
   labels <- foreach(cluster = pathways[ , unique(Cluster) ], .combine = rbind) %do% {
     points <- pathways[ Cluster == cluster, list(x, y) ]
     midPoint <- list(
       x = points[ , x ] %>% mean,
-      y = points[ , y ] %>% mean + 0.1
+      y = points[ , y ] %>% max + 0.25
     )
 
     data.table(x = midPoint$x, y = midPoint$y, label = splitWords(cluster))

@@ -87,20 +87,35 @@ pathwaySimilarity <- function(
   pathCol = 'Description',
   method = c('jaccard', 'cosine', 'cor')
 ) {
-  cols <- c(pathCol, geneCol)
-
-  stopifnot(!is.null(geneCol))
-  stopifnot(all(cols %in% colnames(enrichment)))
-
   method <- match.arg(method)
 
-  genes <- enrichment[ , cols ] %>%
-    deframe %>%
-    lapply(\(x) strsplit(x, split = '/')[[1]])
+  genes <- getGenes(enrichment, geneCol, pathCol)
 
   switch(method,
          'jaccard' = similarityJaccard(genes),
          'cosine' = similarityCosine(genes),
          'cor' = similarityCorrelation(genes)
   )
+}
+
+#'
+#' Enrichment Genes
+#'
+#' @description Gets genes involved in each pathway of enrichment result.
+#'
+#' @param enrichment a data frame containing enrichment results
+#' @param geneCol which column contains gene lists
+#' @param pathCol which column contains path descriptions (human readable text, not ids!)
+#'
+#' @export
+#'
+getGenes <- function(enrichment, geneCol, pathCol = 'Description') {
+  cols <- c(pathCol, geneCol)
+
+  stopifnot(!is.null(geneCol))
+  stopifnot(all(cols %in% colnames(enrichment)))
+
+  enrichment[ , cols ] %>%
+    deframe %>%
+    lapply(\(x) strsplit(x, split = '/')[[1]])
 }

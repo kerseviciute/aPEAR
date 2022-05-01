@@ -27,6 +27,13 @@ but still can't get to the tolerance value, it displays an error message and ret
 smaller and speed up the matrix calculations, then reverse the shift to the center point of the
 resulting ellipoid. Default TRUE}
 }
+\value{
+Output A list containing the "center form" matrix equation of the ellipse. i.e. a 2x2
+matrix "A" and a 2x1 vector "C" representing the center of the ellipse such that:
+(x - C)' A (x - C) <= 1. Also in the list is a 2x1 vector elps.axes.lngth whose elements
+are  one-half  the lengths of the major and minor axes (variables a and b). Also in list is
+alpha, the angle of rotation.
+}
 \description{
 Uses the Khachiyan Algorithm to find the the minimum volume enclosing
 ellipsoid (MVEE) of a set of points. In two dimensions, this is just

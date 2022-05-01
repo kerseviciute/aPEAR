@@ -4,10 +4,10 @@
 \alias{adjacencyFromSimilarity}
 \title{Adjacency Matrix}
 \usage{
-adjacencyFromSimilarity(m, clusters)
+adjacencyFromSimilarity(sim, clusters)
 }
 \arguments{
-\item{m}{similarity matrix}
+\item{sim}{similarity matrix}
 
 \item{clusters}{list of clusters}
 }

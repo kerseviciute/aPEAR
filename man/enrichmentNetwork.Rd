@@ -38,5 +38,5 @@ default (either setSize or Count will be used)}
 Displays enrichment results as an easy to interpret cluster network.
 }
 \seealso{
-\code{enrichmentData}
+\code{enrichmentData}, \code{validateEnrichment}
 }

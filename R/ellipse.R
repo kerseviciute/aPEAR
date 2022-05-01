@@ -17,12 +17,13 @@
 #' smaller and speed up the matrix calculations, then reverse the shift to the center point of the
 #' resulting ellipoid. Default TRUE
 #' 
-#' @result Output A list containing the "center form" matrix equation of the ellipse. i.e. a 2x2
+#' @return Output A list containing the "center form" matrix equation of the ellipse. i.e. a 2x2
 #' matrix "A" and a 2x1 vector "C" representing the center of the ellipse such that:
 #' (x - C)' A (x - C) <= 1. Also in the list is a 2x1 vector elps.axes.lngth whose elements
 #' are  one-half  the lengths of the major and minor axes (variables a and b). Also in list is
 #' alpha, the angle of rotation.
 #' 
+#
 # @references https://stat.ethz.ch/pipermail/r-help/2011-March/272997.html
 #             http://www.mathworks.com/matlabcentral/fileexchange/9542
 #             http://www.mathworks.com/matlabcentral/fileexchange/13844
@@ -63,8 +64,8 @@ mvee <- function(xy = NULL, tolerance = 0.005, plotme = TRUE, max.iter = 500, sh
   u <- rep(1 / n, n)
   ## Khachiyan Algorithm
   while (err > tolerance) {
- #' see [4]http://stackoverflow.com/questions/1768197/bounding-ellipse
- #' for commented code
+ # see [4]http://stackoverflow.com/questions/1768197/bounding-ellipse
+ # for commented code
     X <- Q %*% diag(u) %*% t(Q)
     M <- diag(t(Q) %*% solve(X) %*% Q)
     maximum <- max(M)
@@ -97,9 +98,9 @@ mvee <- function(xy = NULL, tolerance = 0.005, plotme = TRUE, max.iter = 500, sh
   ## Calculate the rotation angle from the first Eigenvector
   alpha <- atan2(A.eigen$vectors[ 2, 1 ], A.eigen$vectors[ 1, 1 ]) - pi / 2
   if (plotme) {
- #' Plotting commands adapted from code by Alberto Monteiro
- #' [5]https://stat.ethz.ch/pipermail/r-help/2006-October/114652.html
- #' Create the points for the ellipse
+ # Plotting commands adapted from code by Alberto Monteiro
+ # [5]https://stat.ethz.ch/pipermail/r-help/2006-October/114652.html
+ # Create the points for the ellipse
     theta <- seq(0, 2 * pi, length = 72)
     a <- semi.axes[ 1 ]
     b <- semi.axes[ 2 ]
@@ -109,14 +110,14 @@ mvee <- function(xy = NULL, tolerance = 0.005, plotme = TRUE, max.iter = 500, sh
       a * cos(theta) * sin(alpha) +
       b * sin(theta) *
         cos(alpha)
- #' Plot the ellipse with the same scale on each axis
+ # Plot the ellipse with the same scale on each axis
     plot(elp.plot.xs, elp.plot.ys, type = "l", lty = "dotted", col = "blue",
          asp = 1,
          main = "minimum volume enclosing ellipsoid", xlab = names(xy)[ 1 ],
          ylab = names(xy)[ 2 ])
- #' Plot the original points
+ # Plot the original points
     points(xy[ , 1 ], xy[ , 2 ], type = "p", pch = 16)
- #' add the center of the ellipse using a triangle symbol
+ # add the center of the ellipse using a triangle symbol
     points(c[ 1 ], c[ 2 ], pch = 2, col = "blue")
   }
   ellipse.params <- list("A" = A, "c" = c, "ab" = semi.axes, alpha = alpha)
