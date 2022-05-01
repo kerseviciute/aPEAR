@@ -2,10 +2,16 @@
 % Please edit documentation in R/helper.R
 \name{emptyMatrix}
 \alias{emptyMatrix}
-\title{Creates an empty matrix (with NA vals) from gene lists.}
+\title{Empty Matrix}
 \usage{
-emptyMatrix(genes, data = NA)
+emptyMatrix(values, data = NA)
+}
+\arguments{
+\item{values}{a list of values}
+
+\item{data}{default data}
 }
 \description{
-Creates an empty matrix (with NA vals) from gene lists.
+Creates an empty matrix from names of a list. Will set colnames and rownames as
+the names of the list.
 }

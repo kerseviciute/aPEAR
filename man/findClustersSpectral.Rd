@@ -2,14 +2,14 @@
 % Please edit documentation in R/cluster.R
 \name{findClustersSpectral}
 \alias{findClustersSpectral}
-\title{Finds clusters using adaptive spectral clustering.}
+\title{Spectral Clustering}
 \usage{
-findClustersSpectral(sim, method = "wordcloud")
+findClustersSpectral(sim, verbose = FALSE)
 }
 \arguments{
 \item{sim}{similarity matrix}
 
-\item{method}{a method for setting the cluster names}
+\item{verbose}{enable / disable log messages}
 }
 \description{
 Finds clusters using adaptive spectral clustering.

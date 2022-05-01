@@ -2,16 +2,16 @@
 % Please edit documentation in R/cluster.R
 \name{findClustersHier}
 \alias{findClustersHier}
-\title{Finds clusters using hierarchical algorithm.}
+\title{Hierarchical Clustering}
 \usage{
-findClustersHier(sim, minClusterSize = 2, method = "pagerank")
+findClustersHier(sim, minClusterSize = 2, verbose = FALSE)
 }
 \arguments{
 \item{sim}{similarity matrix}
 
 \item{minClusterSize}{minimum cluster size}
 
-\item{method}{a method for setting the cluster names}
+\item{verbose}{enable / disable log messages}
 }
 \description{
 Finds clusters using hierarchical algorithm.

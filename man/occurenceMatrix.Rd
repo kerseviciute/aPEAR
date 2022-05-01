@@ -2,10 +2,13 @@
 % Please edit documentation in R/helper.R
 \name{occurenceMatrix}
 \alias{occurenceMatrix}
-\title{Creates an occurence matrix from gene lists.}
+\title{Occurence Matrix}
 \usage{
-occurenceMatrix(genes)
+occurenceMatrix(values)
+}
+\arguments{
+\item{values}{a list of lists}
 }
 \description{
-Creates an occurence matrix from gene lists.
+Creates an occurence matrix from gene lists (rows - pathways, cols - genes).
 }

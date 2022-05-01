@@ -1,32 +1,50 @@
-#' Creating Valid Input
 #'
+#' Creating Valid Input
+#' 
 #' @description Currently, this package is able to work with DOSE enrichment classes. However, you
 #' may wish to pass different enrichment results. In this case, prepare your data so that it
-#' contains 'Description' and 'core_enrichment' columns. Use \code{'colorBy'} and \code{'nodeSize'}
-#' parameters to set which columns should be used for colouring the nodes and adjusting their size
-#' (eg. \code{colorBy = 'NES', nodeSize = 'setSize'}).
-#'
-#' @seealso \code{enrichmentNetwork}
+#' contains \code{'Description'} (readable pathway names) and \code{'pathwayGenes'} (a list of genes
+#' that belong to the pathway) columns. Use \code{'colorBy'} and \code{'nodeSize'} parameters to set
+#' which columns should be used for colouring the nodes and adjusting their size (eg.
+#' \code{colorBy = 'NES', nodeSize = 'setSize'}). These will not be set automatically if you create
+#' custom input. You may use \code{validateEnrichment} to check whether your data has valid format.
+#' 
+#' @seealso \code{enrichmentNetwork}, \code{validateEnrichment}
 #' @name enrichmentData
+#' 
 NULL
 
-#' Creates an empty matrix (with NA vals) from gene lists.
-emptyMatrix <- function(genes, data = NA) {
-  sim <- matrix(data = data, nrow = length(genes), ncol = length(genes))
-  colnames(sim) <- names(genes)
-  rownames(sim) <- names(genes)
+#'
+#' Empty Matrix
+#' 
+#' @description Creates an empty matrix from names of a list. Will set colnames and rownames as
+#' the names of the list.
+#' 
+#' @param values a list of values
+#' @param data default data
+#' 
+emptyMatrix <- function(values, data = NA) {
+  sim <- matrix(data = data, nrow = length(values), ncol = length(values))
+  colnames(sim) <- names(values)
+  rownames(sim) <- names(values)
 
   sim
 }
 
-#' Creates an occurence matrix from gene lists.
-#'
+#' 
+#' Occurence Matrix
+#' 
+#' @description Creates an occurence matrix from gene lists (rows - pathways, cols - genes).
+#' 
+#' @param values a list of lists
+#' 
 #' @importFrom dplyr %>%
-occurenceMatrix <- function(genes) {
-  uniqueGenes <- genes %>% unlist %>% unique
+#' 
+occurenceMatrix <- function(values) {
+  uniqueGenes <- values %>% unlist %>% unique
 
-  m <- matrix(data = FALSE, nrow = length(genes), ncol = length(uniqueGenes))
-  rownames(m) <- names(genes)
+  m <- matrix(data = FALSE, nrow = length(values), ncol = length(uniqueGenes))
+  rownames(m) <- names(values)
   colnames(m) <- uniqueGenes
 
   for (path in rownames(m)) {
@@ -36,8 +54,40 @@ occurenceMatrix <- function(genes) {
   m
 }
 
-validateEnrichment <- function(enrichment, colorBy = NULL, nodeSize = NULL, verbose = TRUE) {
+
+#' 
+#' Enrichment Validation
+#' 
+#' @description Validates enrichment input for use with \code{enrichmentNetwork} method and checks
+#' for available columns. Currently only validates clusterProfiler results.
+#' 
+#' @param enrichment data frame containing enrichment results
+#' @param colorBy which column will be used to color \code{enrichmentNetwork} nodes. Will try to set
+#' automatically if it is NULL
+#' @param nodeSize which column will be used to set size of \code{enrichmentNetwork} nodes. Will try
+#' to set automatically if it is NULL
+#' @param verbose enable / disable log messages
+#'
+#' @seealso \code{enrichmentData}
+#' 
+#' @export
+#' 
+validateEnrichment <- function(enrichment,
+                               colorBy = NULL,
+                               nodeSize = NULL,
+                               verbose = TRUE
+) {
   enrichmentType <- NULL
+
+  if (all(c('Description', 'pathwayGenes') %in% colnames(enrichment))) {
+    enrichmentType <- 'custom'
+    genesCol <- 'pathwayGenes'
+
+    stopifnot(!any(c(is.null(colorBy), is.null(nodeSize))))
+
+    if (verbose) message('Setting colorBy to ', colorBy)
+    if (verbose) message('Setting colorBy to ', colorBy)
+  }
 
   if (all(c('Description', 'geneID', 'pvalue', 'Count') %in% colnames(enrichment))) {
     enrichmentType <- 'enrichDOSE'
@@ -61,10 +111,10 @@ validateEnrichment <- function(enrichment, colorBy = NULL, nodeSize = NULL, verb
     if (enrichmentType == 'gseDOSE') colorBy <- 'NES'
 
     if (verbose) message('Setting colorBy to ', colorBy, ' automatically')
-  } else {
-    if (!(colorBy %in% colnames(enrichment))) {
-      stop('"', colorBy, '" not found in enrichment columns.')
-    }
+  }
+
+  if (!(colorBy %in% colnames(enrichment))) {
+    stop('"', colorBy, '" not found in enrichment columns.')
   }
 
   # Setting nodeSize
@@ -73,10 +123,10 @@ validateEnrichment <- function(enrichment, colorBy = NULL, nodeSize = NULL, verb
     if (enrichmentType == 'gseDOSE') nodeSize <- 'setSize'
 
     if (verbose) message('Setting nodeSize to ', nodeSize, ' automatically')
-  } else {
-    if (!(nodeSize %in% colnames(enrichment))) {
-      stop('"', nodeSize, '" not found in enrichment columns.')
-    }
+  }
+
+  if (!(nodeSize %in% colnames(enrichment))) {
+    stop('"', nodeSize, '" not found in enrichment columns.')
   }
 
   return(list(

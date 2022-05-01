@@ -3,6 +3,7 @@
 export(enrichmentNetwork)
 export(findClusters)
 export(pathwaySimilarity)
+export(validateEnrichment)
 import(data.table)
 import(foreach)
 import(ggforce)

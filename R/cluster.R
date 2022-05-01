@@ -31,9 +31,9 @@ findClusters <- function(sim,
   }
 
   clusters <- switch(method,
-                     'markov' = findClustersMarkov(sim, minClusterSize, nameMethod, verbose),
-                     'hier' = findClustersHier(sim, minClusterSize, nameMethod, verbose),
-                     'spectral' = findClustersSpectral(sim, nameMethod, verbose))
+                     'markov' = findClustersMarkov(sim, minClusterSize, verbose),
+                     'hier' = findClustersHier(sim, minClusterSize, verbose),
+                     'spectral' = findClustersSpectral(sim, verbose))
 
   findClusterNames(sim, clusters, nameMethod)
 }
@@ -52,8 +52,10 @@ findClusters <- function(sim,
 #' 
 findClustersMarkov <- function(sim,
                                minClusterSize = 2,
-                               verbose = TRUE
+                               verbose = FALSE
 ) {
+  if (verbose) message('Using Markov Cluster Algorithm to detect pathway clusters...')
+
   allow1 <- ifelse(minClusterSize == 1, TRUE, FALSE)
 
   res <- mcl(sim,
@@ -76,6 +78,8 @@ findClustersMarkov <- function(sim,
     clusters <- clusters[ clusters %in% ids ]
   }
 
+  if (verbose) message('Clustering done')
+
   clusters
 }
 
@@ -90,8 +94,10 @@ findClustersMarkov <- function(sim,
 #' 
 findClustersHier <- function(sim,
                              minClusterSize = 2,
-                             verbose = TRUE
+                             verbose = FALSE
 ) {
+  if (verbose) message('Using Hierarchical Clustering to detect pathway clusters...')
+
   hCluster <- as.dist(1 - sim) %>% hclust
   clusters <- cutree(hCluster, h = 0.9)
 
@@ -100,6 +106,8 @@ findClustersHier <- function(sim,
     ids <- names(sizes)[ sizes >= minClusterSize ]
     clusters <- clusters[ clusters %in% ids ]
   }
+
+  if (verbose) message('Clustering done')
 
   clusters
 }
@@ -114,10 +122,14 @@ findClustersHier <- function(sim,
 #' 
 #' @importFrom Spectrum Spectrum
 #' 
-findClustersSpectral <- function(sim, verbose = TRUE) {
+findClustersSpectral <- function(sim, verbose = FALSE) {
+  if (verbose) message('Using Spectral Clustering to detect pathway clusters...')
+
   clusters <- Spectrum(sim, maxk = 50, showres = FALSE, silent = verbose)
   clusters <- clusters$assignments
   names(clusters) <- colnames(sim)
+
+  if (verbose) message('Clustering done')
 
   clusters
 }

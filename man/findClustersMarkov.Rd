@@ -2,17 +2,17 @@
 % Please edit documentation in R/cluster.R
 \name{findClustersMarkov}
 \alias{findClustersMarkov}
-\title{Finds clusters in a similarity matrix.}
+\title{Markov Cluster Algorithm}
 \usage{
-findClustersMarkov(sim, minClusterSize = 2, method = "pagerank")
+findClustersMarkov(sim, minClusterSize = 2, verbose = FALSE)
 }
 \arguments{
 \item{sim}{similarity matrix}
 
 \item{minClusterSize}{minimum cluster size}
 
-\item{method}{a method for setting the cluster names}
+\item{verbose}{enable / disable log messages}
 }
 \description{
-Finds clusters in a similarity matrix.
+Finds clusters in a similarity matrix using Markov Cluster Algorithm.
 }

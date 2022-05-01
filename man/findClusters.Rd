@@ -2,13 +2,14 @@
 % Please edit documentation in R/cluster.R
 \name{findClusters}
 \alias{findClusters}
-\title{Finds clusters in a similarity matrix.}
+\title{Pathway Clustering}
 \usage{
 findClusters(
   sim,
   minClusterSize = 2,
-  method = "markov",
-  nameMethod = "pagerank"
+  method = c("markov", "hier", "spectral"),
+  nameMethod = c("pagerank", "hits", "none"),
+  verbose = FALSE
 )
 }
 \arguments{
@@ -17,11 +18,13 @@ findClusters(
 \item{minClusterSize}{minimum cluster size (integer, >= 1). This parameter is ignored when using
 \code{method = 'spectral'}}
 
-\item{method}{a method to be used for detecting clusters. Available options include 'markov',
-'hier' and 'spectral'}
+\item{method}{a method to be used for detecting clusters. Available methods are: \code{'markov'},
+\code{'hier'} and \code{'spectral'}}
 
-\item{nameMethod}{a method for setting cluster names. Available method include 'pagerank',
-'hits', 'wordcloud' and 'none'}
+\item{nameMethod}{a method for setting cluster names. Available methods are: \code{'pagerank'},
+\code{'hits'}, and \code{'none'}}
+
+\item{verbose}{enable / disable log messages}
 }
 \description{
 Finds clusters in a similarity matrix.

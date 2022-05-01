@@ -44,7 +44,10 @@ enrichmentNetwork <- function(
                            geneCol = params$genesCol,
                            method = simMethod)
 
-  # clusters <- findClusters(sim, method = clustMethod, nameMethod = clustNameMethod)
+  clusters <- findClusters(sim,
+                           method = clustMethod,
+                           nameMethod = clustNameMethod,
+                           verbose = verbose)
   #
   # p <- drawPlot(enrichment, sim, clusters, colorBy, nodeSize)
   #
