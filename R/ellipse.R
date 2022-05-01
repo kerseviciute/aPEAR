@@ -120,7 +120,7 @@ mvee <- function(xy = NULL, tolerance = 0.005, plotme = TRUE, max.iter = 500, sh
  # add the center of the ellipse using a triangle symbol
     points(c[ 1 ], c[ 2 ], pch = 2, col = "blue")
   }
-  ellipse.params <- list("A" = A, "c" = c, "ab" = semi.axes, alpha = alpha)
+  ellipse.params <- list("A" = A, "c" = c, "a" = semi.axes[1], "b" = semi.axes[2], alpha = alpha)
 
   ellipse.params
 }

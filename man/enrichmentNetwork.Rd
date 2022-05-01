@@ -11,6 +11,8 @@ enrichmentNetwork(
   clustNameMethod = c("pagerank", "hits", "none"),
   colorBy = NULL,
   nodeSize = NULL,
+  innerCutoff = 0.1,
+  outerCutoff = 0.5,
   verbose = FALSE
 )
 }
@@ -31,6 +33,10 @@ default (either NES or p-value will be used)}
 
 \item{nodeSize}{which column should be used to set the node size. If NULL, will be selected by
 default (either setSize or Count will be used)}
+
+\item{innerCutoff}{similarity cutoff for in-cluster nodes}
+
+\item{outerCutoff}{similarity cutoff for between-cluster nodes}
 
 \item{verbose}{enable / disable log messages}
 }

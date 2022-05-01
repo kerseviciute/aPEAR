@@ -137,3 +137,14 @@ validateEnrichment <- function(enrichment,
     genesCol = genesCol
   ))
 }
+
+#'
+#' Word Splitting
+#'
+#' @description Splits pathway name into multiple lines.
+#'
+#' @param x string to split
+#'
+splitWords <- function(x) {
+  strwrap(x, width = 30) %>% paste(collapse = '\n')
+}

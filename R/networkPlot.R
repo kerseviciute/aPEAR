@@ -14,6 +14,8 @@
 #' default (either NES or p-value will be used)
 #' @param nodeSize which column should be used to set the node size. If NULL, will be selected by
 #' default (either setSize or Count will be used)
+#' @param innerCutoff similarity cutoff for in-cluster nodes
+#' @param outerCutoff similarity cutoff for between-cluster nodes
 #' @param verbose enable / disable log messages
 #'
 #' @seealso \code{enrichmentData}, \code{validateEnrichment}
@@ -27,6 +29,8 @@ enrichmentNetwork <- function(
   clustNameMethod = c('pagerank', 'hits', 'none'),
   colorBy = NULL,
   nodeSize = NULL,
+  innerCutoff = 0.1,
+  outerCutoff = 0.5,
   verbose = FALSE
 ) {
   if (class(enrichment) != 'data.frame') {
@@ -51,9 +55,9 @@ enrichmentNetwork <- function(
                            nameMethod = clustNameMethod,
                            verbose = verbose)
 
-  enrichClust <- prepareEnrichmentClusters(enrichment, clusters, params)
+  enrichClust <- enrichmentNetwork.prepareEnrichmentClusters(enrichment, clusters, params)
 
-  enrichmentNetwork.plot(enrichClust, sim, clusters)
+  enrichmentNetwork.plot(enrichClust, sim, clusters, innerCutoff=innerCutoff, outerCutoff=outerCutoff)
 }
 
 #'
@@ -64,7 +68,7 @@ enrichmentNetwork <- function(
 #' @import data.table
 #' @importFrom dplyr %>%
 #'
-prepareEnrichmentClusters <- function(enrichment, clusters, params) {
+enrichmentNetwork.prepareEnrichmentClusters <- function(enrichment, clusters, params) {
   clusterSizes <- table(clusters)
 
   data.table(
@@ -75,12 +79,25 @@ prepareEnrichmentClusters <- function(enrichment, clusters, params) {
     .[ , `Cluster size` := as.integer(clusterSizes[ Cluster ]) ]
 }
 
+#'
+#' Enrichment Network
+#'
+#' Creates a \code{ggplot} object from pathway similarity matrix and clustering results.
+#'
+#' @param dt output from \code{enrichmentNetwork.prepareEnrichmentClusters}
+#' @param sim similarity matrix
+#' @param innerCutoff similarity cutoff for in-cluster nodes
+#' @param outerCutoff similarity cutoff for between-cluster nodes
+#'
+#' @return \code{ggplot} object.
+#'
 #' @import igraph
 #' @import data.table
 #' @import ggplot2
 #' @import ggforce
-enrichmentNetwork.plot <- function(dt, sim, clust) {
-  graph <- enrichmentNetwork.connect(sim, clust)
+#'
+enrichmentNetwork.plot <- function(dt, sim, clust, innerCutoff = 0.1, outerCutoff = 0.5) {
+  graph <- enrichmentNetwork.connect(sim, clust, innerCutoff=innerCutoff, outerCutoff=outerCutoff)
   coordinates <- merge(graph$coordinates, dt, by.x='ID', by.y='ID')
 
   range <- max(abs(coordinates[ , color ]))
@@ -88,8 +105,7 @@ enrichmentNetwork.plot <- function(dt, sim, clust) {
 
   plot <- ggplot()
 
-  # TODO: add ellipses!
-  # plot <- addEllipses(plot, res, clusters)
+  plot <- enrichmentNetwork.addEllipses(plot, coordinates)
 
   plot <- plot +
     geom_link0(data = lines, aes(x = xStart, y = yStart, xend = xEnd, yend = yEnd), size = 0.1, alpha = 0.3) +
@@ -106,10 +122,24 @@ enrichmentNetwork.plot <- function(dt, sim, clust) {
           legend.position = 'none') +
     scale_color_distiller(limits = c(-range, range), palette = 'Spectral') +
     coord_fixed() +
-    clusterLabels(coordinates)
+    enrichmentNetwork.clusterLabels(coordinates)
 }
 
+#'
+#' Enrichment Network
+#'
+#' @description Connects related pathways.
+#'
+#' @param sim similarity matrix
+#' @param clusters a list of clusters
+#' @param innerCutoff similarity cutoff for in-cluster nodes
+#' @param outerCutoff similarity cutoff for between-cluster nodes
+#'
+#' @return A list with two objects: \code{coordinates} - each pathway coordinates in the graph, and
+#' \code{edges} - list of edges in the graph, with their coordinates.
+#'
 #' @import igraph
+#'
 enrichmentNetwork.connect <- function(sim, clusters, innerCutoff = 0.1, outerCutoff = 0.5) {
   stopifnot(rownames(sim) == colnames(sim))
   paths <- rownames(sim)
@@ -155,20 +185,29 @@ enrichmentNetwork.connect <- function(sim, clusters, innerCutoff = 0.1, outerCut
        edges = edges)
 }
 
+#'
+#' Enrichment Network
+#'
+#' @description Adds ellipses around pathway clusters.
+#'
+#' @param plot \code{ggplot} object
+#' @param pathways a data table containing pathway coordinates in the graph and their clustering
+#' results
+#'
 #' @import data.table
-addEllipses <- function(plot, pathways, clusters) {
-  for (cluster in unique(clusters)) {
+#'
+enrichmentNetwork.addEllipses <- function(plot, pathways) {
+  for (cluster in pathways[ , unique(Cluster) ]) {
     points <- pathways[ Cluster == cluster, list(x, y) ]
 
     if (nrow(points) == 1) { next }
     if (nrow(points) == 2) {
-      points <- rbind(points, data.table(x = mean(points[ , x ]) + 0.01, y = mean(points[ , y ]) - 0.01))
+      points <- rbind(points, data.table(x = mean(points[ , x ]) + 0.1, y = mean(points[ , y ]) - 0.1))
     }
 
     params <- mvee(points, plotme = FALSE)
-    if (params$ab[ 1 ] > 0.5 | params$ab[ 2 ] > 0.5) next
 
-    ellipsePoints <- ellipse(params$c, params$ab, params$alpha, bigger = 0.05)
+    ellipsePoints <- enrichmentNetwork.ellipse(params$c, params$a, params$b, params$alpha, bigger = 0.25)
 
     plot <- plot + geom_path(data = ellipsePoints, aes(x, y), alpha = 0.4, size = 0.2)
   }
@@ -176,11 +215,24 @@ addEllipses <- function(plot, pathways, clusters) {
   plot
 }
 
-ellipse <- function(c, ab, alpha, bigger = 0) {
+#'
+#' Enrichment Network
+#'
+#' @description Calculates ellipse coordinates from its equation.
+#'
+#' @param c ellipse center
+#' @param a a axis
+#' @param b b axis
+#' @param alpha ellipse angle
+#' @param bigger how much to increase ellipse size
+#'
+#' @import data.table
+#'
+enrichmentNetwork.ellipse <- function(c, a, b, alpha, bigger = 0) {
   pacman::p_load(data.table)
   theta <- seq(0, 2 * pi, length = 101)
-  a <- ab[ 1 ] + bigger
-  b <- ab[ 2 ] + bigger
+  a <- a + bigger
+  b <- b + bigger
 
   x <- c[ 1 ] + a * cos(theta) * cos(alpha) - b * sin(theta) * sin(alpha)
   y <- c[ 2 ] +
@@ -190,11 +242,23 @@ ellipse <- function(c, ab, alpha, bigger = 0) {
   data.table(x = x, y = y)
 }
 
+#'
+#' Cluster Labels
+#'
+#' @description Displays a label for each pathway cluster in the graph.
+#'
+#' @param pathways a data table containing pathway coordinates in the graph and their clustering
+#' results
+#'
+#' @return A \code{geom_text} object with labels and their coordinates, ready to add to a
+#' \code{ggplot} object.
+#'
 #' @import data.table
 #' @import foreach
-#' @importFrom dplyr %>%
 #' @import ggplot2
-clusterLabels <- function(pathways) {
+#' @importFrom dplyr %>%
+#'
+enrichmentNetwork.clusterLabels <- function(pathways) {
   labels <- foreach(cluster = pathways[ , unique(Cluster) ], .combine = rbind) %do% {
     points <- pathways[ Cluster == cluster, list(x, y) ]
     midPoint <- list(
@@ -206,8 +270,4 @@ clusterLabels <- function(pathways) {
   }
 
   geom_text(data = labels, aes(x = x, y = y, label = label), size = 2)
-}
-
-splitWords <- function(x) {
-  strwrap(x, width = 30) %>% paste(collapse = '\n')
 }
