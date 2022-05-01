@@ -9,13 +9,23 @@
 #' \code{'hier'} and \code{'spectral'}
 #' @param clustNameMethod method for selecting cluster names. Available methods: \code{'pagerank'},
 #' \code{'hits'} and \code{'none'}
+#' @param colorBy which column should be used to color the nodes. If NULL, will be selected by
+#' default (either NES or p-value will be used)
+#' @param nodeSize which column should be used to set the node size. If NULL, will be selected by
+#' default (either setSize or Count will be used)
+#' @param verbose enable / disable log messages
+#'
+#' @seealso \code{enrichmentData}
 #'
 #' @export
 enrichmentNetwork <- function(
   enrichment,
   simMethod = c('jaccard', 'cosine', 'cor'),
   clustMethod = c('markov', 'hier', 'spectral'),
-  clustNameMethod = c('pagerank', 'hits', 'none')
+  clustNameMethod = c('pagerank', 'hits', 'none'),
+  colorBy = NULL,
+  nodeSize = NULL,
+  verbose = FALSE
 ) {
   if (class(enrichment) != 'data.frame') {
     stop('An object of class data.frame is expected.')
@@ -25,12 +35,20 @@ enrichmentNetwork <- function(
   clustMethod <- match.arg(clustMethod)
   clustNameMethod <- match.arg(clustNameMethod)
 
-  sim <- pathwaySimilarity(enrichment, simMethod)
-  clusters <- findClusters(sim, method = clustMethod, nameMethod = clustNameMethod)
+  params <- validateEnrichment(enrichment,
+                               colorBy = colorBy,
+                               nodeSize = nodeSize,
+                               verbose = verbose)
 
-  p <- drawPlot(enrichment, sim, clusters)
+  sim <- pathwaySimilarity(enrichment,
+                           geneCol = params$genesCol,
+                           method = simMethod)
 
-  p
+  # clusters <- findClusters(sim, method = clustMethod, nameMethod = clustNameMethod)
+  #
+  # p <- drawPlot(enrichment, sim, clusters, colorBy, nodeSize)
+  #
+  # p
 }
 
 #'
@@ -40,7 +58,7 @@ enrichmentNetwork <- function(
 #' @import ggforce
 #' @import reticulate
 #' @import foreach
-drawPlot <- function(enrichment, sim, clusters, innerCutoff = 0.1, outerCutoff = 0.5) {
+drawPlot <- function(enrichment, sim, clusters, colorBy, innerCutoff = 0.1, outerCutoff = 0.5) {
   # TODO: THIS IS TERRIBLE! FIND A WAY TO MAKE IT WORK WITHOUT USING PYTHON!
   use_condaenv('snakemake')
   nx <- import("networkx")
@@ -53,7 +71,7 @@ drawPlot <- function(enrichment, sim, clusters, innerCutoff = 0.1, outerCutoff =
   res <- foreach(id = names(pos), .combine = rbind) %do% {
     data.table(ID = id, x = pos[[id]][ 1 ], y = pos[[id]][ 2 ])
   } %>%
-    merge(enrichment[ , c('Description', 'NES', 'setSize') ], by.x = 'ID', by.y = 'Description') %>%
+    merge(enrichment[ , c('Description', colorBy, 'setSize') ], by.x = 'ID', by.y = 'Description') %>%
     merge(data.table(Cluster = clusters, ID = names(clusters)), by.x = 'ID', by.y = 'ID') %>%
     .[ , `Cluster size` := as.integer(clusterSizes[ Cluster ]) ]
 

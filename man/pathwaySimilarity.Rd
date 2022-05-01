@@ -2,14 +2,24 @@
 % Please edit documentation in R/similarity.R
 \name{pathwaySimilarity}
 \alias{pathwaySimilarity}
-\title{Calculates a similarity matrix.}
+\title{Similarity Matrix}
 \usage{
-pathwaySimilarity(enrichment, method = "jaccard")
+pathwaySimilarity(
+  enrichment,
+  geneCol,
+  pathCol = "Description",
+  method = c("jaccard", "cosine", "cor")
+)
 }
 \arguments{
-\item{enrichment}{a data frame containing enrichment results.}
+\item{enrichment}{a data frame containing enrichment results}
 
-\item{method}{a method to be used. Available values: 'jaccard', 'cosine', 'cor'.}
+\item{geneCol}{which column contains gene lists}
+
+\item{pathCol}{which column contains path descriptions (human readable text, not ids!)}
+
+\item{method}{a method to be used. Available values: \code{'jaccard'}, \code{'cosine'} and
+\code{'cor'}}
 }
 \description{
 Calculates a similarity matrix of all pathways in the enrichment.

@@ -2,9 +2,13 @@
 % Please edit documentation in R/similarity.R
 \name{similarityJaccard}
 \alias{similarityJaccard}
-\title{Calculates jaccard similarity between all pathways.}
+\title{Pathway Jaccard Similarity}
 \usage{
 similarityJaccard(genes)
+}
+\arguments{
+\item{genes}{genes in all pathways. Should be a list of lists, which each entry containing the
+genes that belong to a specific pathway (names of the list should be the pathways)}
 }
 \description{
 Calculates jaccard similarity between all pathways.

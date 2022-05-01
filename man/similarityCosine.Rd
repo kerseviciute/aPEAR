@@ -2,9 +2,13 @@
 % Please edit documentation in R/similarity.R
 \name{similarityCosine}
 \alias{similarityCosine}
-\title{Calculates cosine similarity between all pathways.}
+\title{Pathway Cosine Similarity}
 \usage{
 similarityCosine(genes)
+}
+\arguments{
+\item{genes}{genes in all pathways. Should be a list of lists, which each entry containing the
+genes that belong to a specific pathway (names of the list should be the pathways)}
 }
 \description{
 Calculates cosine similarity between all pathways.

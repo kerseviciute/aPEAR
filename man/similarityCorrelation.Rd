@@ -2,10 +2,14 @@
 % Please edit documentation in R/similarity.R
 \name{similarityCorrelation}
 \alias{similarityCorrelation}
-\title{Calculates correlation between genes in pathways.}
+\title{Pathway Correlation}
 \usage{
 similarityCorrelation(genes)
 }
+\arguments{
+\item{genes}{genes in all pathways. Should be a list of lists, which each entry containing the
+genes that belong to a specific pathway (names of the list should be the pathways)}
+}
 \description{
-Calculates correlation between genes in pathways.
+Calculates correlation between all pathways.
 }

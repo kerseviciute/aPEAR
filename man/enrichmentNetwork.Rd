@@ -8,7 +8,10 @@ enrichmentNetwork(
   enrichment,
   simMethod = c("jaccard", "cosine", "cor"),
   clustMethod = c("markov", "hier", "spectral"),
-  clustNameMethod = c("pagerank", "hits", "none")
+  clustNameMethod = c("pagerank", "hits", "none"),
+  colorBy = NULL,
+  nodeSize = NULL,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -22,7 +25,18 @@ methods: \code{'jaccard'}, \code{'cosine'} and \code{'cor'}}
 
 \item{clustNameMethod}{method for selecting cluster names. Available methods: \code{'pagerank'},
 \code{'hits'} and \code{'none'}}
+
+\item{colorBy}{which column should be used to color the nodes. If NULL, will be selected by
+default (either NES or p-value will be used)}
+
+\item{nodeSize}{which column should be used to set the node size. If NULL, will be selected by
+default (either setSize or Count will be used)}
+
+\item{verbose}{enable / disable log messages}
 }
 \description{
 Displays enrichment results as an easy to interpret cluster network.
+}
+\seealso{
+\code{enrichmentData}
 }
