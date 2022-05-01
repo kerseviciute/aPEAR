@@ -1,6 +1,6 @@
 # pathExplore - an R package for high level GSEA exploration
 
-![Alt text](example.png "Pathway cluster network")
+![Alt text](results/example.png "Pathway cluster network")
 
 ## Installation
 
@@ -19,5 +19,19 @@ library(DOSE)
 data(geneList)
 
 enrich <- gseGO(geneList, OrgDb = org.Hs.eg.db, ont = 'CC')
-enrichmentNetwork(enrich@result)
+p <- enrichmentNetwork(enrich@result)
+
+p
 ```
+
+### Plotly integration
+
+To create interactive plots, use plotly:
+
+```R
+library(plotly)
+
+ggplotly(p, tooltip=c('ID', 'Cluster', 'Cluster size'))
+```
+
+You may find example plots in __results__ directory of this repository.
