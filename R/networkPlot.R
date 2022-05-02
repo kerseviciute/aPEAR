@@ -119,6 +119,7 @@ enrichmentNetwork.plot <- function(dt, sim, clust, innerCutoff = 0.1, outerCutof
   coordinates <- merge(graph$coordinates, dt, by.x = 'ID', by.y = 'ID')
 
   lines <- graph$edges
+  lines <- lines[ from %in% coordinates[ , ID ] & to %in% coordinates[ , ID ] ]
 
   if (colorType == 'nes') {
     range <- max(abs(coordinates[ , color ]))
