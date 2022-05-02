@@ -10,4 +10,5 @@ License: What license is it under?
 RoxygenNote: 7.1.2
 Encoding: UTF-8
 Imports:
-    MCL
+    MCL,
+    Spectrum
