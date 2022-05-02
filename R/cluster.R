@@ -120,10 +120,9 @@ findClustersHier <- function(sim,
 #' @param sim similarity matrix
 #' @param verbose enable / disable log messages
 #' 
-#' @importFrom Spectrum Spectrum
-#' 
 findClustersSpectral <- function(sim, verbose = FALSE) {
   if (verbose) message('Using Spectral Clustering to detect pathway clusters...')
+  library(Spectrum)
 
   clusters <- Spectrum(sim, maxk = 50, showres = FALSE, silent = verbose)
   clusters <- clusters$assignments
