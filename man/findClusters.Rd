@@ -19,7 +19,8 @@ findClusters(
 \code{method = 'spectral'}}
 
 \item{method}{a method to be used for detecting clusters. Available methods are: \code{'markov'},
-\code{'hier'} and \code{'spectral'}}
+\code{'hier'} and \code{'spectral'}. Using \code{'spectral'} method requires that you have
+\code{Spectrum} package installed.}
 
 \item{nameMethod}{a method for setting cluster names. Available methods are: \code{'pagerank'},
 \code{'hits'}, and \code{'none'}}

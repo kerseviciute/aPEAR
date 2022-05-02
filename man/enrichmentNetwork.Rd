@@ -25,7 +25,8 @@ enrichmentNetwork(
 methods: \code{'jaccard'}, \code{'cosine'} and \code{'cor'}}
 
 \item{clustMethod}{method for detecting pathway clusters. Available methods: \code{'markov'},
-\code{'hier'} and \code{'spectral'}}
+\code{'hier'} and \code{'spectral'}. Using \code{'spectral'} method requires that you have
+\code{Spectrum} package installed.}
 
 \item{clustNameMethod}{method for selecting cluster names. Available methods: \code{'pagerank'},
 \code{'hits'} and \code{'none'}}

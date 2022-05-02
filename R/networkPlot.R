@@ -7,7 +7,8 @@
 #' @param simMethod method for calculating similarity matrix between the pathways. Available
 #' methods: \code{'jaccard'}, \code{'cosine'} and \code{'cor'}
 #' @param clustMethod method for detecting pathway clusters. Available methods: \code{'markov'},
-#' \code{'hier'} and \code{'spectral'}
+#' \code{'hier'} and \code{'spectral'}. Using \code{'spectral'} method requires that you have
+#' \code{Spectrum} package installed.
 #' @param clustNameMethod method for selecting cluster names. Available methods: \code{'pagerank'},
 #' \code{'hits'} and \code{'none'}
 #' @param colorBy which column should be used to color the nodes. If NULL, will be selected by

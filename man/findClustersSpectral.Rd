@@ -12,5 +12,6 @@ findClustersSpectral(sim, verbose = FALSE)
 \item{verbose}{enable / disable log messages}
 }
 \description{
-Finds clusters using adaptive spectral clustering.
+Finds clusters using adaptive spectral clustering. Using this method requires that
+you have \code{Spectrum} package installed.
 }

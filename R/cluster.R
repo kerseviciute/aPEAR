@@ -7,7 +7,8 @@
 #' @param minClusterSize minimum cluster size (integer, >= 1). This parameter is ignored when using
 #' \code{method = 'spectral'}
 #' @param method a method to be used for detecting clusters. Available methods are: \code{'markov'},
-#' \code{'hier'} and \code{'spectral'}
+#' \code{'hier'} and \code{'spectral'}. Using \code{'spectral'} method requires that you have
+#' \code{Spectrum} package installed.
 #' @param nameMethod a method for setting cluster names. Available methods are: \code{'pagerank'},
 #' \code{'hits'}, and \code{'none'}
 #' @param verbose enable / disable log messages
@@ -115,7 +116,8 @@ findClustersHier <- function(sim,
 #' 
 #' Spectral Clustering
 #' 
-#' Finds clusters using adaptive spectral clustering.
+#' @description Finds clusters using adaptive spectral clustering. Using this method requires that
+#' you have \code{Spectrum} package installed.
 #' 
 #' @param sim similarity matrix
 #' @param verbose enable / disable log messages
