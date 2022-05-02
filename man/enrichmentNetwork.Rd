@@ -13,6 +13,8 @@ enrichmentNetwork(
   nodeSize = NULL,
   innerCutoff = 0.1,
   outerCutoff = 0.5,
+  colorType = c("nes", "pval"),
+  pCutoff = -10,
   verbose = FALSE
 )
 }
@@ -37,6 +39,11 @@ default (either setSize or Count will be used)}
 \item{innerCutoff}{similarity cutoff for in-cluster nodes}
 
 \item{outerCutoff}{similarity cutoff for between-cluster nodes}
+
+\item{colorType}{how to colour the nodes: \code{'nes'} - will center around 0 with blue min and
+red max, \code{'pval'} - will use log transform on the colorBy column and adjust color range}
+
+\item{pCutoff}{adjust p-value colouring cutoff when using \code{colorType = 'pval'}}
 
 \item{verbose}{enable / disable log messages}
 }

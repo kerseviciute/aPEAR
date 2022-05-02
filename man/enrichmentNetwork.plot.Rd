@@ -4,7 +4,15 @@
 \alias{enrichmentNetwork.plot}
 \title{Enrichment Network}
 \usage{
-enrichmentNetwork.plot(dt, sim, clust, innerCutoff = 0.1, outerCutoff = 0.5)
+enrichmentNetwork.plot(
+  dt,
+  sim,
+  clust,
+  innerCutoff = 0.1,
+  outerCutoff = 0.5,
+  colorType = c("nes", "pval"),
+  pCutoff = -10
+)
 }
 \arguments{
 \item{dt}{output from \code{enrichmentNetwork.prepareEnrichmentClusters}}
@@ -14,6 +22,11 @@ enrichmentNetwork.plot(dt, sim, clust, innerCutoff = 0.1, outerCutoff = 0.5)
 \item{innerCutoff}{similarity cutoff for in-cluster nodes}
 
 \item{outerCutoff}{similarity cutoff for between-cluster nodes}
+
+\item{colorType}{how to colour the nodes: \code{'nes'} - will center around 0 with blue min and
+red max, \code{'pval'} - will use log transform on the colorBy column and colour range [-10, 0]}
+
+\item{pCutoff}{adjust p-value colouring cutoff when using \code{colorType = 'pval'}}
 }
 \value{
 \code{ggplot} object.

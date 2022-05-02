@@ -16,6 +16,9 @@
 #' default (either setSize or Count will be used)
 #' @param innerCutoff similarity cutoff for in-cluster nodes
 #' @param outerCutoff similarity cutoff for between-cluster nodes
+#' @param colorType how to colour the nodes: \code{'nes'} - will center around 0 with blue min and
+#' red max, \code{'pval'} - will use log transform on the colorBy column and adjust color range
+#' @param pCutoff adjust p-value colouring cutoff when using \code{colorType = 'pval'}
 #' @param verbose enable / disable log messages
 #'
 #' @seealso \code{enrichmentData}, \code{validateEnrichment}
@@ -31,6 +34,8 @@ enrichmentNetwork <- function(
   nodeSize = NULL,
   innerCutoff = 0.1,
   outerCutoff = 0.5,
+  colorType = c('nes', 'pval'),
+  pCutoff = -10,
   verbose = FALSE
 ) {
   if (class(enrichment) != 'data.frame') {
@@ -40,6 +45,7 @@ enrichmentNetwork <- function(
   simMethod <- match.arg(simMethod)
   clustMethod <- match.arg(clustMethod)
   clustNameMethod <- match.arg(clustNameMethod)
+  colorType <- match.arg(colorType)
 
   params <- validateEnrichment(enrichment,
                                colorBy = colorBy,
@@ -57,7 +63,13 @@ enrichmentNetwork <- function(
 
   enrichClust <- enrichmentNetwork.prepareEnrichmentClusters(enrichment, clusters, params)
 
-  enrichmentNetwork.plot(enrichClust, sim, clusters, innerCutoff=innerCutoff, outerCutoff=outerCutoff)
+  enrichmentNetwork.plot(enrichClust,
+                         sim,
+                         clusters,
+                         innerCutoff=innerCutoff,
+                         outerCutoff=outerCutoff,
+                         colorType=colorType,
+                         pCutoff=pCutoff)
 }
 
 #'
@@ -88,6 +100,9 @@ enrichmentNetwork.prepareEnrichmentClusters <- function(enrichment, clusters, pa
 #' @param sim similarity matrix
 #' @param innerCutoff similarity cutoff for in-cluster nodes
 #' @param outerCutoff similarity cutoff for between-cluster nodes
+#' @param colorType how to colour the nodes: \code{'nes'} - will center around 0 with blue min and
+#' red max, \code{'pval'} - will use log transform on the colorBy column and colour range [-10, 0]
+#' @param pCutoff adjust p-value colouring cutoff when using \code{colorType = 'pval'}
 #'
 #' @return \code{ggplot} object.
 #'
@@ -96,12 +111,24 @@ enrichmentNetwork.prepareEnrichmentClusters <- function(enrichment, clusters, pa
 #' @import ggplot2
 #' @import ggforce
 #'
-enrichmentNetwork.plot <- function(dt, sim, clust, innerCutoff = 0.1, outerCutoff = 0.5) {
+enrichmentNetwork.plot <- function(dt, sim, clust, innerCutoff = 0.1, outerCutoff = 0.5, colorType = c('nes', 'pval'), pCutoff=-10) {
+  colorType <- match.arg(colorType)
+
   graph <- enrichmentNetwork.connect(sim, clust, innerCutoff=innerCutoff, outerCutoff=outerCutoff)
   coordinates <- merge(graph$coordinates, dt, by.x='ID', by.y='ID')
 
-  range <- max(abs(coordinates[ , color ]))
   lines <- graph$edges
+
+  if (colorType == 'nes') {
+    range <- max(abs(coordinates[ , color ]))
+    colors <- scale_color_distiller(limits = c(-range, range), palette = 'Spectral')
+  }
+
+  if (colorType == 'pval') {
+    coordinates[ , color := log(color) ] %>%
+      .[ color < pCutoff, color := pCutoff ]
+    colors <- scale_color_distiller(limits = c(pCutoff, 0), direction = -1, palette = 'OrRd')
+  }
 
   plot <- ggplot()
 
@@ -120,9 +147,11 @@ enrichmentNetwork.plot <- function(dt, sim, clust, innerCutoff = 0.1, outerCutof
           panel.grid.minor = element_blank(),
           panel.background = element_blank(),
           legend.position = 'none') +
-    scale_color_distiller(limits = c(-range, range), palette = 'Spectral') +
     coord_fixed() +
-    enrichmentNetwork.clusterLabels(coordinates)
+    enrichmentNetwork.clusterLabels(coordinates) +
+    colors
+
+  plot
 }
 
 #'
