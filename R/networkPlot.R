@@ -261,7 +261,6 @@ enrichmentNetwork.addEllipses <- function(plot, pathways) {
 #' @import data.table
 #'
 enrichmentNetwork.ellipse <- function(c, a, b, alpha, bigger = 0) {
-  pacman::p_load(data.table)
   theta <- seq(0, 2 * pi, length = 101)
   a <- a + bigger
   b <- b + bigger
