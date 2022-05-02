@@ -11,6 +11,15 @@ RoxygenNote: 7.1.2
 Encoding: UTF-8
 Imports:
     MCL,
-    arules
+    arules,
+    bayesbio,
+    lsa,
+    tibble,
+    data.table,
+    foreach,
+    ggforce,
+    ggplot2,
+    igraph,
+    dplyr
 Suggests:
     Spectrum
