@@ -7,5 +7,5 @@
 enrichmentNetwork.prepareEnrichmentClusters(enrichment, clusters, params)
 }
 \description{
-Prepares enrichment and clustering results for \code{drawPlot} method.
+Prepares enrichment and clustering results for \code{enrichmentNetwork.plot} method.
 }

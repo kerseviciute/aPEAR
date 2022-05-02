@@ -66,16 +66,16 @@ enrichmentNetwork <- function(
   enrichmentNetwork.plot(enrichClust,
                          sim,
                          clusters,
-                         innerCutoff=innerCutoff,
-                         outerCutoff=outerCutoff,
-                         colorType=colorType,
-                         pCutoff=pCutoff)
+                         innerCutoff = innerCutoff,
+                         outerCutoff = outerCutoff,
+                         colorType = colorType,
+                         pCutoff = pCutoff)
 }
 
 #'
 #' Enrichment Clusters
 #'
-#' @description Prepares enrichment and clustering results for \code{drawPlot} method.
+#' @description Prepares enrichment and clustering results for \code{enrichmentNetwork.plot} method.
 #'
 #' @import data.table
 #' @importFrom dplyr %>%
@@ -87,7 +87,8 @@ enrichmentNetwork.prepareEnrichmentClusters <- function(enrichment, clusters, pa
     ID = enrichment[ , 'Description' ],
     size = enrichment[ , params$nodeSize ],
     color = enrichment[ , params$colorBy ]
-  ) %>% merge(data.table(Cluster = clusters, ID = names(clusters)), by.x = 'ID', by.y = 'ID') %>%
+  ) %>%
+    merge(data.table(Cluster = clusters, ID = names(clusters)), by.x = 'ID', by.y = 'ID') %>%
     .[ , `Cluster size` := as.integer(clusterSizes[ Cluster ]) ]
 }
 
@@ -111,11 +112,11 @@ enrichmentNetwork.prepareEnrichmentClusters <- function(enrichment, clusters, pa
 #' @import ggplot2
 #' @import ggforce
 #'
-enrichmentNetwork.plot <- function(dt, sim, clust, innerCutoff = 0.1, outerCutoff = 0.5, colorType = c('nes', 'pval'), pCutoff=-10) {
+enrichmentNetwork.plot <- function(dt, sim, clust, innerCutoff = 0.1, outerCutoff = 0.5, colorType = c('nes', 'pval'), pCutoff = -10) {
   colorType <- match.arg(colorType)
 
-  graph <- enrichmentNetwork.connect(sim, clust, innerCutoff=innerCutoff, outerCutoff=outerCutoff)
-  coordinates <- merge(graph$coordinates, dt, by.x='ID', by.y='ID')
+  graph <- enrichmentNetwork.connect(sim, clust, innerCutoff = innerCutoff, outerCutoff = outerCutoff)
+  coordinates <- merge(graph$coordinates, dt, by.x = 'ID', by.y = 'ID')
 
   lines <- graph$edges
 

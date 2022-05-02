@@ -20,10 +20,10 @@ for (simMethod in simMethods) {
   for (clustMethod in clustMethods) {
     for (clustNameMethod in namingMethods) {
       p <- enrichmentNetwork(enrich@result,
-                       simMethod = simMethod,
-                       clustMethod = clustMethod,
-                       clustNameMethod = clustNameMethod,
-                       verbose = FALSE
+                             simMethod = simMethod,
+                             clustMethod = clustMethod,
+                             clustNameMethod = clustNameMethod,
+                             verbose = FALSE
       )
       print(p)
     }
