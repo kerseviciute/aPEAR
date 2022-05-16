@@ -126,7 +126,7 @@ findClustersSpectral <- function(sim, verbose = FALSE) {
   if (verbose) message('Using Spectral Clustering to detect pathway clusters...')
   library(Spectrum)
 
-  clusters <- Spectrum(sim, maxk = 50, showres = FALSE, silent = verbose, clusteralg = 'km')
+  clusters <- Spectrum(sim, maxk = 100, showres = FALSE, silent = !verbose, clusteralg = 'km')
   clusters <- clusters$assignments
   names(clusters) <- colnames(sim)
 
