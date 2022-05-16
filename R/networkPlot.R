@@ -41,6 +41,7 @@ enrichmentNetwork <- function(
   drawEllipses = FALSE,
   fontSize = 5,
   repelLabels = FALSE,
+  minClusterSize = 2,
   verbose = FALSE
 ) {
   if (class(enrichment) != 'data.frame') {
@@ -64,6 +65,7 @@ enrichmentNetwork <- function(
   clusters <- findClusters(sim,
                            method = clustMethod,
                            nameMethod = clustNameMethod,
+                           minClusterSize = minClusterSize,
                            verbose = verbose)
 
   enrichClust <- enrichmentNetwork.prepareEnrichmentClusters(enrichment, clusters, params)
