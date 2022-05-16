@@ -39,6 +39,8 @@ enrichmentNetwork <- function(
   colorType = c('nes', 'pval'),
   pCutoff = -10,
   drawEllipses = FALSE,
+  fontSize = 5,
+  repelLabels = FALSE,
   verbose = FALSE
 ) {
   if (class(enrichment) != 'data.frame') {
@@ -73,7 +75,9 @@ enrichmentNetwork <- function(
                          outerCutoff = outerCutoff,
                          colorType = colorType,
                          pCutoff = pCutoff,
-                         drawEllipses = drawEllipses
+                         drawEllipses = drawEllipses,
+                         fontSize = fontSize,
+                         repelLabels = repelLabels
   )
 }
 
@@ -125,7 +129,9 @@ enrichmentNetwork.plot <- function(dt,
                                    outerCutoff = 0.5,
                                    colorType = c('nes', 'pval'),
                                    pCutoff = -10,
-                                   drawEllipses = FALSE
+                                   drawEllipses = FALSE,
+                                   fontSize = 5,
+                                   repelLabels = FALSE
 ) {
   colorType <- match.arg(colorType)
 
@@ -166,7 +172,7 @@ enrichmentNetwork.plot <- function(dt,
           panel.background = element_blank(),
           legend.position = 'none') +
     coord_fixed() +
-    enrichmentNetwork.clusterLabels(coordinates) +
+    enrichmentNetwork.clusterLabels(coordinates, fontSize, repelLabels) +
     colors
 
   plot
@@ -302,18 +308,35 @@ enrichmentNetwork.ellipse <- function(c, a, b, alpha, bigger = 0) {
 #' @import data.table
 #' @import foreach
 #' @import ggplot2
+#' @import ggrepel
 #' @importFrom dplyr %>%
 #'
-enrichmentNetwork.clusterLabels <- function(pathways) {
-  labels <- foreach(cluster = pathways[ , unique(Cluster) ], .combine = rbind) %do% {
-    points <- pathways[ Cluster == cluster, list(x, y) ]
-    midPoint <- list(
-      x = points[ , x ] %>% mean,
-      y = points[ , y ] %>% max + 0.25
-    )
+enrichmentNetwork.clusterLabels <- function(pathways, fontSize = 5, repelLabels = FALSE) {
+  if (repelLabels) {
+    labels <- foreach(cluster = pathways[ , unique(Cluster) ], .combine = rbind) %do% {
+      points <- pathways[ Cluster == cluster, list(x, y) ]
+      midPoint <- list(
+        x = points[ , x ] %>% mean,
+        y = points[ , y ] %>% max
+      )
 
-    data.table(x = midPoint$x, y = midPoint$y, label = splitWords(cluster))
+      data.table(x = midPoint$x, y = midPoint$y, label = splitWords(cluster))
+    }
+  } else {
+    labels <- foreach(cluster = pathways[ , unique(Cluster) ], .combine = rbind) %do% {
+      points <- pathways[ Cluster == cluster, list(x, y) ]
+      midPoint <- list(
+        x = points[ , x ] %>% mean,
+        y = points[ , y ] %>% max + 0.25
+      )
+
+      data.table(x = midPoint$x, y = midPoint$y, label = splitWords(cluster))
+    }
   }
 
-  geom_text(data = labels, aes(x = x, y = y, label = label), size = 2)
+  if (repelLabels) {
+    geom_text_repel(data = labels, aes(x = x, y = y, label = label), size = fontSize)
+  } else {
+    geom_text(data = labels, aes(x = x, y = y, label = label), size = fontSize)
+  }
 }
