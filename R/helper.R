@@ -48,8 +48,8 @@ occurenceMatrix <- function(values) {
   rownames(m) <- names(values)
   colnames(m) <- uniqueGenes
 
-  for (path in rownames(m)) {
-    m[ path, colnames(m) %in% values[[path]] ] <- TRUE
+  for (i in seq_along(values)) {
+    m[ i, colnames(m) %in% values[[ i ]] ] <- TRUE
   }
 
   m

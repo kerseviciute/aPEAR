@@ -20,6 +20,7 @@
 #' @param colorType how to colour the nodes: \code{'nes'} - will center around 0 with blue min and
 #' red max, \code{'pval'} - will use log transform on the colorBy column and adjust color range
 #' @param pCutoff adjust p-value colouring cutoff when using \code{colorType = 'pval'}
+#' @param drawEllipses enable / disable ellipse drawing
 #' @param verbose enable / disable log messages
 #'
 #' @seealso \code{enrichmentData}, \code{validateEnrichment}
@@ -37,6 +38,7 @@ enrichmentNetwork <- function(
   outerCutoff = 0.5,
   colorType = c('nes', 'pval'),
   pCutoff = -10,
+  drawEllipses = FALSE,
   verbose = FALSE
 ) {
   if (class(enrichment) != 'data.frame') {
@@ -70,7 +72,9 @@ enrichmentNetwork <- function(
                          innerCutoff = innerCutoff,
                          outerCutoff = outerCutoff,
                          colorType = colorType,
-                         pCutoff = pCutoff)
+                         pCutoff = pCutoff,
+                         drawEllipses = drawEllipses
+  )
 }
 
 #'
@@ -105,6 +109,7 @@ enrichmentNetwork.prepareEnrichmentClusters <- function(enrichment, clusters, pa
 #' @param colorType how to colour the nodes: \code{'nes'} - will center around 0 with blue min and
 #' red max, \code{'pval'} - will use log transform on the colorBy column and colour range [-10, 0]
 #' @param pCutoff adjust p-value colouring cutoff when using \code{colorType = 'pval'}
+#' @param drawEllipses enable / disable ellipse drawing
 #'
 #' @return \code{ggplot} object.
 #'
@@ -113,7 +118,15 @@ enrichmentNetwork.prepareEnrichmentClusters <- function(enrichment, clusters, pa
 #' @import ggplot2
 #' @import ggforce
 #'
-enrichmentNetwork.plot <- function(dt, sim, clust, innerCutoff = 0.1, outerCutoff = 0.5, colorType = c('nes', 'pval'), pCutoff = -10) {
+enrichmentNetwork.plot <- function(dt,
+                                   sim,
+                                   clust,
+                                   innerCutoff = 0.1,
+                                   outerCutoff = 0.5,
+                                   colorType = c('nes', 'pval'),
+                                   pCutoff = -10,
+                                   drawEllipses = FALSE
+) {
   colorType <- match.arg(colorType)
 
   graph <- enrichmentNetwork.connect(sim, clust, innerCutoff = innerCutoff, outerCutoff = outerCutoff)
@@ -135,7 +148,9 @@ enrichmentNetwork.plot <- function(dt, sim, clust, innerCutoff = 0.1, outerCutof
 
   plot <- ggplot()
 
-  plot <- enrichmentNetwork.addEllipses(plot, coordinates)
+  if (drawEllipses) {
+    plot <- enrichmentNetwork.addEllipses(plot, coordinates)
+  }
 
   plot <- plot +
     geom_link0(data = lines, aes(x = xStart, y = yStart, xend = xEnd, yend = yEnd), size = 0.1, alpha = 0.3) +
