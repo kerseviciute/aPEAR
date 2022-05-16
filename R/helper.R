@@ -26,8 +26,8 @@ NULL
 #' 
 emptyMatrix <- function(values, data = NA) {
   sim <- matrix(data = data, nrow = length(values), ncol = length(values))
-  colnames(sim) <- names(values)
-  rownames(sim) <- names(values)
+  colnames(sim) <- make.unique(names(values))
+  rownames(sim) <- make.unique(names(values))
 
   sim
 }
