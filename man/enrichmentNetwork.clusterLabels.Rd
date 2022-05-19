@@ -4,7 +4,7 @@
 \alias{enrichmentNetwork.clusterLabels}
 \title{Cluster Labels}
 \usage{
-enrichmentNetwork.clusterLabels(pathways)
+enrichmentNetwork.clusterLabels(pathways, fontSize = 5, repelLabels = FALSE)
 }
 \arguments{
 \item{pathways}{a data table containing pathway coordinates in the graph and their clustering

@@ -15,6 +15,10 @@ enrichmentNetwork(
   outerCutoff = 0.5,
   colorType = c("nes", "pval"),
   pCutoff = -10,
+  drawEllipses = FALSE,
+  fontSize = 5,
+  repelLabels = FALSE,
+  minClusterSize = 2,
   verbose = FALSE
 )
 }
@@ -45,6 +49,8 @@ default (either setSize or Count will be used)}
 red max, \code{'pval'} - will use log transform on the colorBy column and adjust color range}
 
 \item{pCutoff}{adjust p-value colouring cutoff when using \code{colorType = 'pval'}}
+
+\item{drawEllipses}{enable / disable ellipse drawing}
 
 \item{verbose}{enable / disable log messages}
 }

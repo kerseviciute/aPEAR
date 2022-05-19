@@ -11,7 +11,10 @@ enrichmentNetwork.plot(
   innerCutoff = 0.1,
   outerCutoff = 0.5,
   colorType = c("nes", "pval"),
-  pCutoff = -10
+  pCutoff = -10,
+  drawEllipses = FALSE,
+  fontSize = 5,
+  repelLabels = FALSE
 )
 }
 \arguments{
@@ -27,6 +30,8 @@ enrichmentNetwork.plot(
 red max, \code{'pval'} - will use log transform on the colorBy column and colour range [-10, 0]}
 
 \item{pCutoff}{adjust p-value colouring cutoff when using \code{colorType = 'pval'}}
+
+\item{drawEllipses}{enable / disable ellipse drawing}
 }
 \value{
 \code{ggplot} object.
