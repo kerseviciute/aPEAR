@@ -5,11 +5,13 @@ library(ggplot2)
 
 setwd('evaluation')
 
-chunks <- seq.int(100, 1000, 50)
+chunks <- seq.int(100, 500, 50)
 datasets <- 1:10
-methods <- c('jaccard', 'cosine', 'cor')
+simMethods <- c('jaccard', 'cosine', 'cor')
+clustMethods <- c('markov', 'hier', 'spectral')
 
-nCalculations <- length(chunks) * length(datasets) * length(methods)
+nCalculations <- length(chunks) * length(datasets) * length(simMethods) +
+  length(chunks) * length(datasets) * length(simMethods) * length(clustMethods)
 message('Calculations awaiting: ', nCalculations)
 
 set.seed(2395793)
@@ -20,15 +22,39 @@ for (dataset in datasets) {
   dt <- readRDS(glue('datasets/{dataset}.RDS'))
 
   for (chunk in chunks) {
-    for (method in methods) {
+    for (simMethod in simMethods) {
+      message('Done ', counter, '/', nCalculations)
       counter <- counter + 1
-      message(counter)
 
-      message('Dataset ', dataset, ' chunk ', chunk, ' method ', method)
-      time <- system.time(pathwaySimilarity(dt[ 1:chunk, ], geneCol = 'core_enrichment', method = method))
-      time <- time[[ 'elapsed' ]]
+      message('Dataset ', dataset, ' chunk ', chunk, ' method ', simMethod)
+      time <- system.time({
+        sim <- pathwaySimilarity(dt[ 1:chunk, ], geneCol = 'core_enrichment', method = simMethod)
+      })
+      simTime <- time[[ 'user.self' ]]
 
-      results[[ counter ]] <- data.table(Chunk = chunk, Dataset = dataset, Method = method, Time = time)
+      results[[ counter ]] <- data.table(Chunk = chunk,
+                                         Dataset = dataset,
+                                         Method = simMethod,
+                                         Time = simTime,
+                                         Type = 'similarity',
+                                         Similarity = NA
+      )
+
+      for (clustMethod in clustMethods) {
+        counter <- counter + 1
+        message('Dataset ', dataset, ' chunk ', chunk, ' method ', simMethod, ' clustMethod ', clustMethod)
+
+        time <- system.time(findClusters(sim, method = clustMethod, nameMethod = 'none'))
+        clustTime <- time[[ 'user.self' ]]
+
+        results[[ counter ]] <- data.table(Chunk = chunk,
+                                           Dataset = dataset,
+                                           Method = clustMethod,
+                                           Time = clustTime,
+                                           Type = 'clustering',
+                                           Similarity = simMethod
+        )
+      }
     }
   }
 }
@@ -37,9 +63,15 @@ results <- rbindlist(results)
 
 stopifnot(nrow(results) == nCalculations)
 
-results[ , list(Seconds = mean(Time), N = Chunk), by = c('Chunk', 'Method') ] %>%
+results[ Type == 'clustering', list(Seconds = mean(Time), N = Chunk), by = c('Chunk', 'Method') ] %>%
   ggplot(aes(x = N, y = Seconds, color = Method)) +
   geom_point() +
   geom_line()
 
+results[ Type == 'similarity', list(Seconds = mean(Time), N = Chunk), by = c('Chunk', 'Method') ] %>%
+  ggplot(aes(x = N, y = Seconds, color = Method)) +
+  geom_point() +
+  geom_line()
+
+# TODO: need to recalculate!
 saveRDS(results, 'simSpeed.RDS')
