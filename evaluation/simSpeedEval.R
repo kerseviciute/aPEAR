@@ -90,5 +90,4 @@ results[ Type == 'similarity', list(Seconds = mean(Time), N = Chunk), by = c('Ch
   geom_point() +
   geom_line()
 
-# TODO: need to recalculate!
 saveRDS(results, 'simSpeed.RDS')
