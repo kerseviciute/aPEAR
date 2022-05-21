@@ -52,13 +52,13 @@ You may find example plots in __results__ directory of this repository.
   - [x] jaccard
   - [x] cosine
   - [x] correlation
-- [ ] Evaluate clustering quality (all datasets with 500 pathways, calculate mean for all datasets)
-  - [ ] what metrics to use?
-  - [ ] markov (j-c-c)
-  - [ ] hierarchical (j-c-c)
-  - [ ] spectral (j-c-c)
-- [ ] Evaluate program execution times (100-500-50 pathways, calculate mean for all datasets)
-  - [ ] markov (j-c-c)
-  - [ ] hierarchical (j-c-c)
-  - [ ] spectral (j-c-c)
+- [x] Evaluate clustering quality (all datasets with 500 pathways, calculate mean for all datasets)
+  - [x] what metrics to use?
+  - [x] markov (j-c-c)
+  - [x] hierarchical (j-c-c)
+  - [x] spectral (j-c-c)
+- [x] Evaluate program execution times (100-500-50 pathways, calculate mean for all datasets)
+  - [x] markov (j-c-c)
+  - [x] hierarchical (j-c-c)
+  - [x] spectral (j-c-c)
 - [ ] Choose one gsea dataset and compare its results with Cytoscape?
