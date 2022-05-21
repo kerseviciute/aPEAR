@@ -41,10 +41,24 @@ for (dataset in datasets) {
       )
 
       for (clustMethod in clustMethods) {
+        set.seed(2395029)
+
         counter <- counter + 1
         message('Dataset ', dataset, ' chunk ', chunk, ' method ', simMethod, ' clustMethod ', clustMethod)
 
-        time <- system.time(findClusters(sim, method = clustMethod, nameMethod = 'none'))
+        # Sometimes spectral clustering fails due to randomization in kmeans algorithm, so
+        # we repeat until it doesnt fail
+        clusters <- NULL
+        while (is.null(clusters)) {
+          time <- system.time({
+            clusters <- tryCatch({
+              findClusters(sim, method = clustMethod, nameMethod = 'none')
+            }, error = function(x) {
+              NULL
+            })
+          })
+        }
+
         clustTime <- time[[ 'user.self' ]]
 
         results[[ counter ]] <- data.table(Chunk = chunk,
@@ -63,10 +77,13 @@ results <- rbindlist(results)
 
 stopifnot(nrow(results) == nCalculations)
 
-results[ Type == 'clustering', list(Seconds = mean(Time), N = Chunk), by = c('Chunk', 'Method') ] %>%
+results[ Type == 'clustering'] %>%
+  .[ Similarity == 'cor' ] %>%
+  .[, list(Seconds = mean(Time), N = Chunk), by = c('Chunk', 'Method') ] %>%
   ggplot(aes(x = N, y = Seconds, color = Method)) +
   geom_point() +
   geom_line()
+
 
 results[ Type == 'similarity', list(Seconds = mean(Time), N = Chunk), by = c('Chunk', 'Method') ] %>%
   ggplot(aes(x = N, y = Seconds, color = Method)) +

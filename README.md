@@ -48,7 +48,7 @@ You may find example plots in __results__ directory of this repository.
 ## Evaluation
 
 - [x] Create multiple (10) datasets containing enrichment results from RNASEQ and EPIC experiments
-- [x] Evaluate similarity calculation times (100-1000-50 pathways, calculate mean for all datasets)
+- [x] Evaluate similarity calculation times (100-500-50 pathways, calculate mean for all datasets)
   - [x] jaccard
   - [x] cosine
   - [x] correlation
@@ -57,7 +57,7 @@ You may find example plots in __results__ directory of this repository.
   - [ ] markov (j-c-c)
   - [ ] hierarchical (j-c-c)
   - [ ] spectral (j-c-c)
-- [ ] Evaluate program execution times (100-1000-50 pathways, calculate mean for all datasets)
+- [ ] Evaluate program execution times (100-500-50 pathways, calculate mean for all datasets)
   - [ ] markov (j-c-c)
   - [ ] hierarchical (j-c-c)
   - [ ] spectral (j-c-c)
