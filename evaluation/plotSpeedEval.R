@@ -2,6 +2,7 @@ library(pathExplore)
 library(foreach)
 library(glue)
 library(ggplot2)
+library(data.table)
 
 setwd('evaluation')
 
