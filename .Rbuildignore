@@ -1,4 +1,6 @@
-evaluation/datasets
+evaluation/
+examples/
+images/
 *.RDS
 *.png
 *.jpeg
