@@ -36,6 +36,10 @@ findClusters <- function(sim,
                      'hier' = findClustersHier(sim, minClusterSize, verbose),
                      'spectral' = findClustersSpectral(sim, verbose))
 
+  if (length(clusters) == 0) {
+    stop('No clusters found.')
+  }
+
   findClusterNames(sim, clusters, nameMethod)
 }
 
@@ -59,6 +63,7 @@ findClustersMarkov <- function(sim,
 
   allow1 <- ifelse(minClusterSize == 1, TRUE, FALSE)
 
+  # TODO: this may not find any clusters and then show an error :(
   res <- mcl(sim,
              addLoops = FALSE,
              max.iter = 500,
