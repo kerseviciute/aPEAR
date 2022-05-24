@@ -9,6 +9,10 @@ enrichmentNetwork.clusterLabels(pathways, fontSize = 5, repelLabels = FALSE)
 \arguments{
 \item{pathways}{a data table containing pathway coordinates in the graph and their clustering
 results}
+
+\item{fontSize}{adjust cluster label font size}
+
+\item{repelLabels}{should cluster label positions be corrected}
 }
 \value{
 A \code{geom_text} object with labels and their coordinates, ready to add to a

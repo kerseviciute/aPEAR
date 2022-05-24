@@ -52,6 +52,12 @@ red max, \code{'pval'} - will use log transform on the colorBy column and adjust
 
 \item{drawEllipses}{enable / disable ellipse drawing}
 
+\item{fontSize}{adjust cluster label font size}
+
+\item{repelLabels}{should cluster label positions be corrected}
+
+\item{minClusterSize}{min number of nodes in a single cluster}
+
 \item{verbose}{enable / disable log messages}
 }
 \description{

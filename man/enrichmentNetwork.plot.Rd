@@ -22,6 +22,8 @@ enrichmentNetwork.plot(
 
 \item{sim}{similarity matrix}
 
+\item{clust}{assigned clusters}
+
 \item{innerCutoff}{similarity cutoff for in-cluster nodes}
 
 \item{outerCutoff}{similarity cutoff for between-cluster nodes}
@@ -32,6 +34,10 @@ red max, \code{'pval'} - will use log transform on the colorBy column and colour
 \item{pCutoff}{adjust p-value colouring cutoff when using \code{colorType = 'pval'}}
 
 \item{drawEllipses}{enable / disable ellipse drawing}
+
+\item{fontSize}{adjust cluster label font size}
+
+\item{repelLabels}{should cluster label positions be corrected}
 }
 \value{
 \code{ggplot} object.

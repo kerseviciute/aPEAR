@@ -21,6 +21,9 @@
 #' red max, \code{'pval'} - will use log transform on the colorBy column and adjust color range
 #' @param pCutoff adjust p-value colouring cutoff when using \code{colorType = 'pval'}
 #' @param drawEllipses enable / disable ellipse drawing
+#' @param fontSize adjust cluster label font size
+#' @param repelLabels should cluster label positions be corrected
+#' @param minClusterSize min number of nodes in a single cluster
 #' @param verbose enable / disable log messages
 #'
 #' @seealso \code{enrichmentData}, \code{validateEnrichment}
@@ -110,12 +113,15 @@ enrichmentNetwork.prepareEnrichmentClusters <- function(enrichment, clusters, pa
 #'
 #' @param dt output from \code{enrichmentNetwork.prepareEnrichmentClusters}
 #' @param sim similarity matrix
+#' @param clust assigned clusters
 #' @param innerCutoff similarity cutoff for in-cluster nodes
 #' @param outerCutoff similarity cutoff for between-cluster nodes
 #' @param colorType how to colour the nodes: \code{'nes'} - will center around 0 with blue min and
 #' red max, \code{'pval'} - will use log transform on the colorBy column and colour range [-10, 0]
 #' @param pCutoff adjust p-value colouring cutoff when using \code{colorType = 'pval'}
 #' @param drawEllipses enable / disable ellipse drawing
+#' @param fontSize adjust cluster label font size
+#' @param repelLabels should cluster label positions be corrected
 #'
 #' @return \code{ggplot} object.
 #'
@@ -303,6 +309,8 @@ enrichmentNetwork.ellipse <- function(c, a, b, alpha, bigger = 0) {
 #'
 #' @param pathways a data table containing pathway coordinates in the graph and their clustering
 #' results
+#' @param fontSize adjust cluster label font size
+#' @param repelLabels should cluster label positions be corrected
 #'
 #' @return A \code{geom_text} object with labels and their coordinates, ready to add to a
 #' \code{ggplot} object.
