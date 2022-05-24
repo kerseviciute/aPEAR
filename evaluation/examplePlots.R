@@ -69,4 +69,4 @@ plot <- enrichmentNetwork(enrichment,
                              innerCutoff = 0.005, outerCutoff = 0.2,
                              repelLabels = TRUE)
 
-ggsave('enrichment_pathExplore.png', plot)
+ggsave('../images/enrichment_pathExplore.png', plot)
