@@ -60,6 +60,9 @@ red max, \code{'pval'} - will use log transform on the colorBy column and adjust
 
 \item{verbose}{enable / disable log messages}
 }
+\value{
+\code{ggplot} object.
+}
 \description{
 Displays enrichment results as an easy to interpret cluster network.
 }

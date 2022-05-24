@@ -26,6 +26,8 @@
 #' @param minClusterSize min number of nodes in a single cluster
 #' @param verbose enable / disable log messages
 #'
+#' @return \code{ggplot} object.
+#'
 #' @seealso \code{enrichmentData}, \code{validateEnrichment}
 #'
 #' @export
@@ -55,6 +57,19 @@ enrichmentNetwork <- function(
   clustMethod <- match.arg(clustMethod)
   clustNameMethod <- match.arg(clustNameMethod)
   colorType <- match.arg(colorType)
+
+  # Validate the parameters
+  if (!between(innerCutoff, 0, 1)) {
+    stop('innerCutoff must be between 0 and 1.')
+  }
+
+  if (!between(outerCutoff, 0, 1)) {
+    stop('outerCutoff must be between 0 and 1.')
+  }
+
+  if (minClusterSize < 2) {
+    stop('Currently supported minClusterSize >= 2')
+  }
 
   params <- validateEnrichment(enrichment,
                                colorBy = colorBy,
@@ -332,6 +347,8 @@ enrichmentNetwork.clusterLabels <- function(pathways, fontSize = 5, repelLabels 
 
       data.table(x = midPoint$x, y = midPoint$y, label = splitWords(cluster))
     }
+
+    geom_text_repel(data = labels, aes(x = x, y = y, label = label), size = fontSize)
   } else {
     labels <- foreach(cluster = pathways[ , unique(Cluster) ], .combine = rbind) %do% {
       points <- pathways[ Cluster == cluster, list(x, y) ]
@@ -342,11 +359,7 @@ enrichmentNetwork.clusterLabels <- function(pathways, fontSize = 5, repelLabels 
 
       data.table(x = midPoint$x, y = midPoint$y, label = splitWords(cluster))
     }
-  }
 
-  if (repelLabels) {
-    geom_text_repel(data = labels, aes(x = x, y = y, label = label), size = fontSize)
-  } else {
     geom_text(data = labels, aes(x = x, y = y, label = label), size = fontSize)
   }
 }
