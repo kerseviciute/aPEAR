@@ -1,0 +1,7 @@
+evaluation/
+examples/
+images/
+*.RDS
+*.png
+*.jpeg
+.DS_Store
