@@ -65,7 +65,7 @@ plot <- enrichmentNetwork(enrichment,
                              drawEllipses = TRUE,
                              verbose = FALSE,
                              minClusterSize = 4,
-                             fontSize = 2,
+                             fontSize = 3,
                              innerCutoff = 0.005, outerCutoff = 0.2,
                              repelLabels = TRUE)
 

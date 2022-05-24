@@ -65,7 +65,7 @@ plot3 <- results[ Type == 'clustering' ] %>%
 
 plot3
 
-ggsave('cluster_time_by_similarity.png', plot)
+ggsave('cluster_time_by_similarity.png', plot3)
 
 
 results <- readRDS('evaluation/clusterScore.RDS') %>%
