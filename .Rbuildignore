@@ -1,0 +1,5 @@
+evaluation/datasets
+*.RDS
+*.png
+*.jpeg
+.DS_Store
