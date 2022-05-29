@@ -28,7 +28,7 @@ library(DOSE)
 data(geneList)
 
 enrich <- gseGO(geneList, OrgDb = org.Hs.eg.db, ont = 'CC')
-p <- enrichmentNetwork(enrich@result)
+p <- enrichmentNetwork(enrich@result, drawEllipses = TRUE, fontSize = 2.5)
 
 p
 ```
