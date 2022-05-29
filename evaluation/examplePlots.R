@@ -33,7 +33,9 @@ for (simMethod in simMethods) {
                              verbose = FALSE,
                              fontSize = 3,
                              innerCutoff = 0.005, outerCutoff = 0.2,
-                             repelLabels = TRUE
+                             repelLabels = TRUE,
+                             colorBy = 'p.adjust',
+                             colorType = 'pval'
       )
       data[[ counter ]] <- data.table(Index = counter, Similarity = simMethod, Cluster = clustMethod, Name = clustNameMethod)
 
@@ -41,6 +43,8 @@ for (simMethod in simMethods) {
     }
   }
 }
+
+plots[[ counter ]]
 
 data <- rbindlist(data)
 
@@ -70,3 +74,82 @@ plot <- enrichmentNetwork(enrichment,
                              repelLabels = TRUE)
 
 ggsave('../images/enrichment_pathExplore.png', plot)
+
+
+
+
+genes <- geneList[ abs(geneList) > 2 ] %>% names
+enrich <- enrichGO(genes, OrgDb = org.Hs.eg.db, ont = 'BP')
+dim(enrich@result)
+
+library(enrichplot)
+edo <- pairwise_termsim(enrich)
+plot <- emapplot(edo, showCategory = 130, node_label = 'group', group_category = TRUE)
+plot
+ggsave('/Users/ieva/Thesis2022/pathExplore/images/emapplot.png', plot)
+
+dt <- enrich@result
+dt %>% setDT
+dt <- dt[ qvalue < 0.01 ]
+dt %>% setDF
+
+plot <- enrichmentNetwork(dt,
+                  simMethod = 'jaccard',
+                  clustMethod = 'hier',
+                  clustNameMethod = 'pagerank',
+                  drawEllipses = TRUE,
+                  verbose = TRUE,
+                  fontSize = 3,
+                  innerCutoff = 0.2, outerCutoff = 0.4,
+                  repelLabels = TRUE, pCutoff = -15,
+                  colorBy = 'p.adjust',
+                  colorType = 'pval')
+plot
+ggsave('/Users/ieva/Thesis2022/pathExplore/images/pval_enrichmentNetwork.png', plot)
+
+
+
+
+
+
+
+packages <- c(
+'data.table',
+'foreach',
+'ggforce',
+'ggplot2',
+'ggrepel',
+'igraph',
+'MCL',
+'arules',
+'bayesbio',
+'dplyr',
+'lsa',
+'tibble',
+'plotly',
+'clusterProfiler',
+'org.Hs.eg.db',
+'DOSE',
+'glue',
+'reshape2',
+'clusterCrit',
+'ggpubr'
+)
+
+library(glue)
+
+for (package in packages) {
+  print(glue('{package} v{packageVersion(package)}\\newline'))
+}
+
+
+
+
+
+
+
+
+
+
+
+
