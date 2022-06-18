@@ -7,15 +7,14 @@
 ### Install latest stable version
 
 ```R
-library(devtools)
-install_github('ievaKer/pathExplore')
+install.packages("devtools")
+devtools::install_github('ievaKer/pathExplore')
 ```
 
 ### Install latest beta version
 
 ```R
-library(devtools)
-install_github('ievaKer/pathExplore@development')
+devtools::install_github('ievaKer/pathExplore@development')
 ```
 
 ### Run an example

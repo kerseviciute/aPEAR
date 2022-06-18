@@ -252,10 +252,10 @@ enrichmentNetwork.connect <- function(sim, clusters, innerCutoff = 0.1, outerCut
   coordinates[ , ID := V(g) %>% as.list %>% names ]
 
   edges %>%
-    .[ , xStart := lapply(from, \(path) coordinates[ ID %in% path, x ]) %>% unlist ] %>%
-    .[ , yStart := lapply(from, \(path) coordinates[ ID %in% path, y ]) %>% unlist ] %>%
-    .[ , xEnd := lapply(to, \(path) coordinates[ ID %in% path, x ]) %>% unlist ] %>%
-    .[ , yEnd := lapply(to, \(path) coordinates[ ID %in% path, y ]) %>% unlist ]
+    .[ , xStart := lapply(from, function(path) coordinates[ ID %in% path, x ]) %>% unlist ] %>%
+    .[ , yStart := lapply(from, function(path) coordinates[ ID %in% path, y ]) %>% unlist ] %>%
+    .[ , xEnd := lapply(to, function(path) coordinates[ ID %in% path, x ]) %>% unlist ] %>%
+    .[ , yEnd := lapply(to, function(path) coordinates[ ID %in% path, y ]) %>% unlist ]
 
   list(coordinates = coordinates,
        edges = edges)

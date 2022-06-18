@@ -117,5 +117,5 @@ getGenes <- function(enrichment, geneCol, pathCol = 'Description') {
 
   enrichment[ , cols ] %>%
     deframe %>%
-    lapply(\(x) strsplit(x, split = '/')[[1]])
+    lapply(function(x) strsplit(x, split = '/')[[1]])
 }
