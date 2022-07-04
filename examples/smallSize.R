@@ -14,6 +14,8 @@ enrichment <- enrichment@result %>% setDT
 
 # Select random pathways
 set.seed(348934)
-dt <- enrichment[ sample(1:nrow(enrichment), 10) ] %>% setDF
+dt <- enrichment[ sample(1:nrow(enrichment), 20) ] %>% setDF
 
-enrichmentNetwork(dt, drawEllipses = TRUE, clustMethod = 'spectral')
+# Example how to change colors
+enrichmentNetwork(dt, drawEllipses = TRUE, clustMethod = 'hier') +
+  scale_colour_gradient(low = '#0076A4', high = '#881D58')
