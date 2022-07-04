@@ -184,7 +184,7 @@ enrichmentNetwork.plot <- function(dt,
   }
 
   plot <- plot +
-    geom_link0(data = lines, aes(x = xStart, y = yStart, xend = xEnd, yend = yEnd), size = 0.1, alpha = 0.3) +
+    geom_link0(data = lines, aes(x = xStart, y = yStart, xend = xEnd, yend = yEnd), size = 0.25, alpha = 0.2) +
     geom_point(data = coordinates, aes(x = x, y = y, ID = ID, color = color, size = size, Cluster = Cluster, `Cluster size` = `Cluster size`)) +
     theme(axis.title.x = element_blank(),
           axis.text.x = element_blank(),
@@ -352,7 +352,7 @@ enrichmentNetwork.clusterLabels <- function(pathways, fontSize = 5, repelLabels 
       data.table(x = midPoint$x, y = midPoint$y, label = splitWords(cluster))
     }
 
-    geom_text_repel(data = labels, aes(x = x, y = y, label = label), size = fontSize)
+    geom_text_repel(data = labels, aes(x = x, y = y, label = label), size = fontSize, segment.size = 0.25)
   } else {
     labels <- foreach(cluster = pathways[ , unique(Cluster) ], .combine = rbind) %do% {
       points <- pathways[ Cluster == cluster, list(x, y) ]
@@ -364,6 +364,6 @@ enrichmentNetwork.clusterLabels <- function(pathways, fontSize = 5, repelLabels 
       data.table(x = midPoint$x, y = midPoint$y, label = splitWords(cluster))
     }
 
-    geom_text(data = labels, aes(x = x, y = y, label = label), size = fontSize)
+    geom_text(data = labels, aes(x = x, y = y, label = label), size = fontSize, segment.size = 0.25)
   }
 }
