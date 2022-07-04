@@ -167,12 +167,14 @@ enrichmentNetwork.plot <- function(dt,
   if (colorType == 'nes') {
     range <- max(abs(coordinates[ , color ]))
     colors <- scale_color_distiller(limits = c(-range, range), palette = 'Spectral')
+    colorTitle <- 'NES'
   }
 
   if (colorType == 'pval') {
     coordinates[ , color := log(color) ] %>%
       .[ color < pCutoff, color := pCutoff ]
     colors <- scale_color_distiller(limits = c(pCutoff, 0), direction = -1, palette = 'OrRd')
+    colorTitle <- 'p-value'
   }
 
   plot <- ggplot()
@@ -193,7 +195,9 @@ enrichmentNetwork.plot <- function(dt,
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
           panel.background = element_blank(),
-          legend.position = 'none') +
+          legend.position = 'right',
+          legend.key = element_rect(fill = 'white')) +
+    labs(color = colorTitle, size = 'Cluster size') +
     coord_fixed() +
     enrichmentNetwork.clusterLabels(coordinates, fontSize, repelLabels) +
     colors
