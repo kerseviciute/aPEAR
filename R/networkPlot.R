@@ -197,7 +197,7 @@ enrichmentNetwork.plot <- function(dt,
           panel.background = element_blank(),
           legend.position = 'right',
           legend.key = element_rect(fill = 'white')) +
-    labs(color = colorTitle, size = 'Cluster size') +
+    labs(color = colorTitle, size = 'Pathway size') +
     coord_fixed() +
     enrichmentNetwork.clusterLabels(coordinates, fontSize, repelLabels) +
     colors
