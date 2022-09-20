@@ -24,6 +24,8 @@
 #' @param fontSize adjust cluster label font size
 #' @param repelLabels should cluster label positions be corrected
 #' @param minClusterSize min number of nodes in a single cluster
+#' @param plotOnly default: TRUE. If set to false, returns clustering results as well as the plot
+#' (a list object is returned).
 #' @param verbose enable / disable log messages
 #'
 #' @return \code{ggplot} object.
@@ -47,6 +49,7 @@ enrichmentNetwork <- function(
   fontSize = 5,
   repelLabels = FALSE,
   minClusterSize = 2,
+  plotOnly = TRUE,
   verbose = FALSE
 ) {
   if (class(enrichment) != 'data.frame') {
@@ -88,17 +91,23 @@ enrichmentNetwork <- function(
 
   enrichClust <- enrichmentNetwork.prepareEnrichmentClusters(enrichment, clusters, params)
 
-  enrichmentNetwork.plot(enrichClust,
-                         sim,
-                         clusters,
-                         innerCutoff = innerCutoff,
-                         outerCutoff = outerCutoff,
-                         colorType = colorType,
-                         pCutoff = pCutoff,
-                         drawEllipses = drawEllipses,
-                         fontSize = fontSize,
-                         repelLabels = repelLabels
-  )
+  plot <- enrichmentNetwork.plot(enrichClust,
+                                 sim,
+                                 clusters,
+                                 innerCutoff = innerCutoff,
+                                 outerCutoff = outerCutoff,
+                                 colorType = colorType,
+                                 pCutoff = pCutoff,
+                                 drawEllipses = drawEllipses,
+                                 fontSize = fontSize,
+                                 repelLabels = repelLabels)
+
+  if (plotOnly) {
+    plot
+  } else {
+    list(plot = plot,
+         clusters = enrichClust[ , list(ID, Cluster) ])
+  }
 }
 
 #'
