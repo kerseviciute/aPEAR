@@ -19,6 +19,7 @@ enrichmentNetwork(
   fontSize = 5,
   repelLabels = FALSE,
   minClusterSize = 2,
+  plotOnly = TRUE,
   verbose = FALSE
 )
 }
@@ -57,6 +58,9 @@ red max, \code{'pval'} - will use log transform on the colorBy column and adjust
 \item{repelLabels}{should cluster label positions be corrected}
 
 \item{minClusterSize}{min number of nodes in a single cluster}
+
+\item{plotOnly}{default: TRUE. If set to false, returns clustering results as well as the plot
+(a list object is returned).}
 
 \item{verbose}{enable / disable log messages}
 }

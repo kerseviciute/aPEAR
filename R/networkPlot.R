@@ -103,10 +103,10 @@ enrichmentNetwork <- function(
                                  repelLabels = repelLabels)
 
   if (plotOnly) {
-    plot
+    return(plot)
   } else {
-    list(plot = plot,
-         clusters = enrichClust[ , list(ID, Cluster) ])
+    return(list(plot = plot,
+         clusters = enrichClust[ , list(ID, Cluster) ]))
   }
 }
 
