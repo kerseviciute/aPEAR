@@ -1,12 +1,12 @@
 Package: pathExplore
 Type: Package
-Title: What the package does (short line)
+Title: Clustering and Visualization of Pathway Enrichment Results
 Version: 1.0
 Date: 2022-04-30
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: Ieva Kerševičiūtė
+Maintainer: Ieva Kerševičiūtė <kerseviciute.ieva@gmail.com>
+Description: Clustering and visualization of pathway enrichment results.
+License: MIT
 RoxygenNote: 7.2.0
 Encoding: UTF-8
 Imports:
