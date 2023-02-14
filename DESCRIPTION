@@ -3,7 +3,7 @@ Type: Package
 Title: Clustering and Visualization of Pathway Enrichment Results
 Version: 1.0
 Date: 2023-02-14
-Authors@R: c(person(given="Ieva", family="Kerševičiūtė", email="kerseviciute.ieva@gmail.com", role=c("aut", "cre")))
+Authors@R: c(person(given = "Ieva", family = "Kerseviciute", email = "kerseviciute.ieva@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "https://orcid.org/0000-0002-9353-038X")))
 Description: Clustering and visualization of pathway enrichment results.
 License: MIT + file LICENSE
 RoxygenNote: 7.2.3
