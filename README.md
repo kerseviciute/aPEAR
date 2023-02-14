@@ -1,6 +1,6 @@
 # pathExplore - an R package for high level GSEA exploration
 
-![Alt text](results/example.png "Pathway cluster network")
+![Alt text](example.png "Pathway cluster network")
 
 ## Installation
 

@@ -63,13 +63,16 @@ findClustersMarkov <- function(sim,
 
   allow1 <- ifelse(minClusterSize == 1, TRUE, FALSE)
 
-  # TODO: this may not find any clusters and then show an error :(
   res <- mcl(sim,
              addLoops = FALSE,
              max.iter = 500,
              expansion = 2,
              inflation = 2.5,
              allow1 = allow1)
+
+  if (!('Cluster' %in% names(res))) {
+    stop('Unable to cluster data using Markov clustering algorithm.')
+  }
 
   clusters <- res$Cluster
   names(clusters) <- rownames(sim)

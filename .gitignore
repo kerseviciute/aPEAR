@@ -1,3 +1,4 @@
 .idea
 *.RDS
 .DS_Store
+inst/doc

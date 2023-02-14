@@ -2,7 +2,7 @@ Package: pathExplore
 Type: Package
 Title: Clustering and Visualization of Pathway Enrichment Results
 Version: 1.0
-Date: 2022-04-30
+Date: 2023-02-02
 Author: Ieva Kerševičiūtė
 Maintainer: Ieva Kerševičiūtė <kerseviciute.ieva@gmail.com>
 Description: Clustering and visualization of pathway enrichment results.
@@ -20,6 +20,7 @@ Imports:
     ggforce,
     ggplot2,
     igraph,
-    dplyr
+    dplyr,
+    ggrepel
 Suggests:
     Spectrum

@@ -106,7 +106,7 @@ enrichmentNetwork <- function(
     return(plot)
   } else {
     return(list(plot = plot,
-         clusters = enrichClust[ , list(ID, Cluster) ]))
+                clusters = enrichClust[ , list(ID, Cluster) ]))
   }
 }
 
