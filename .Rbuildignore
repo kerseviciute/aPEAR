@@ -1,5 +1,6 @@
-evaluation/
-examples/
-images/
-results/
-.DS_Store
+^\.idea$
+^\.DS_Store$
+^\.\.Rcheck$
+^example\.png$
+^\.git$
+^\.gitignore$

@@ -2,12 +2,11 @@ Package: pathExplore
 Type: Package
 Title: Clustering and Visualization of Pathway Enrichment Results
 Version: 1.0
-Date: 2023-02-02
-Author: Ieva Kerševičiūtė
-Maintainer: Ieva Kerševičiūtė <kerseviciute.ieva@gmail.com>
+Date: 2023-02-14
+Authors@R: c(person(given="Ieva", family="Kerševičiūtė", email="kerseviciute.ieva@gmail.com", role=c("aut", "cre")))
 Description: Clustering and visualization of pathway enrichment results.
-License: MIT
-RoxygenNote: 7.2.0
+License: MIT + file LICENSE
+RoxygenNote: 7.2.3
 Encoding: UTF-8
 Imports:
     MCL,
@@ -24,3 +23,5 @@ Imports:
     ggrepel
 Suggests:
     Spectrum
+URL: https://github.com/ievaKer/pathExplore
+BugReports: https://github.com/ievaKer/pathExplore/issues

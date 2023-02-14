@@ -2,3 +2,4 @@
 *.RDS
 .DS_Store
 inst/doc
+..Rcheck
