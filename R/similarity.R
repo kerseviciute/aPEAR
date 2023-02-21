@@ -41,7 +41,8 @@ similarityCosine <- function(genes) {
     for (j in seq_along(genes)) {
       if (j >= i) { break }
       terms <- c(genes[[i]], genes[[j]]) %>% unique
-      t <- m[ c(i, j), colnames(m) %in% terms ]
+      t <- m[ c(i, j), colnames(m) %in% terms ] %>%
+        matrix(nrow = 2)
       sim[ i, j ] <- cosine(t[ 1, ], t[ 2, ])
       sim[ j, i ] <- sim[ i, j ]
     }
