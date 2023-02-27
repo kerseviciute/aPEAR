@@ -7,18 +7,25 @@
 ### Install latest stable version
 
 ```R
-library(devtools)
-install_github('ievaKer/pathExplore')
+install.packages("devtools")
+install.packages("ggrepel")
+devtools::install_github('ievaKer/pathExplore')
 ```
 
 ### Install latest beta version
 
 ```R
-library(devtools)
-install_github('ievaKer/pathExplore@development')
+devtools::install_github('ievaKer/pathExplore@development')
 ```
 
 ### Run an example
+
+```R
+devtools::install_git('https://git.bioconductor.org/packages/clusterProfiler')
+install.packages("BiocManager")
+BiocManager::install("org.Hs.eg.db")
+devtools::install_git("https://git.bioconductor.org/packages/DOSE")
+```
 
 ```R
 library(pathExplore)
