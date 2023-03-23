@@ -1,4 +1,4 @@
-Package: pathExplore
+Package: aPEAR
 Type: Package
 Title: Clustering and Visualization of Pathway Enrichment Results
 Version: 1.0
@@ -23,5 +23,5 @@ Imports:
     ggrepel
 Suggests:
     Spectrum
-URL: https://github.com/ievaKer/pathExplore
-BugReports: https://github.com/ievaKer/pathExplore/issues
+URL: https://github.com/ievaKer/aPEAR
+BugReports: https://github.com/ievaKer/aPEAR/issues

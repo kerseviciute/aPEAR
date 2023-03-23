@@ -1,4 +1,4 @@
-# pathExplore - an R package for high level GSEA exploration
+# _aPEAR_: an R package for enrichment network visualisation
 
 ![Alt text](example.png "Pathway cluster network")
 
@@ -8,20 +8,20 @@
 
 ```R
 library(devtools)
-install_github('ievaKer/pathExplore')
+install_github('ievaKer/aPEAR')
 ```
 
 ### Install latest beta version
 
 ```R
 library(devtools)
-install_github('ievaKer/pathExplore@development')
+install_github('ievaKer/aPEAR@development')
 ```
 
 ### Run an example
 
 ```R
-library(pathExplore)
+library(aPEAR)
 library(clusterProfiler)
 library(org.Hs.eg.db)
 library(DOSE)
