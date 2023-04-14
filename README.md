@@ -2,6 +2,12 @@
 
 ![Alt text](example.png "Pathway cluster network")
 
+## Citation
+
+If you use this package in your research, please cite:
+
+Kerseviciute I, Gordevicius J. aPEAR: an R package for autonomous visualisation of pathway enrichment networks. BioRxiv. 2023 Mar 29; doi: 10.1101/2023.03.28.534514
+
 ## Installation
 
 ### Install latest stable version
@@ -42,5 +48,3 @@ library(plotly)
 
 ggplotly(p, tooltip=c('ID', 'Cluster', 'Cluster size'))
 ```
-
-You may find example plots in __results__ directory of this repository.
